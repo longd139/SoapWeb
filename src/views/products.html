@@ -1,0 +1,425 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sản Phẩm - EMEE CARE</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700;900&display=swap"
+      rel="stylesheet"
+    />
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              wood: {
+                500: '#855E42',
+                800: '#4A3B32',
+                50: '#FDFBF7',
+                200: '#E5DFD5' // Thêm màu viền nhạt
+              }
+            },
+            fontFamily: {
+              sans: ['Roboto', 'sans-serif']
+            }
+          }
+        }
+      }
+    </script>
+  </head>
+  <body class="bg-wood-50 text-wood-800 antialiased">
+    <nav class="container mx-auto px-6 py-8 relative border-wood-800/10">
+      <div class="flex justify-between items-center h-10">
+        <div class="md:hidden cursor-pointer text-wood-800 hover:text-wood-500 transition">
+          <i class="fas fa-bars text-2xl"></i>
+        </div>
+        <div class="hidden md:flex gap-8 text-sm font-medium tracking-wider text-wood-800/70">
+          <a href="/" class="hover:text-wood-500 transition">HOME</a>
+          <a href="/products" class="text-wood-500 font-bold transition">SẢN PHẨM</a>
+          <a href="#" class="hover:text-wood-500 transition">LIÊN HỆ</a>
+        </div>
+        <div class="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          <a
+            href="/"
+            class="text-2xl font-bold tracking-[0.15em] border-[3px] border-wood-800 px-8 py-2 text-wood-800 uppercase inline-block"
+            >EMEE CARE</a
+          >
+        </div>
+        <div class="hidden md:flex items-center gap-6 text-wood-800">
+          <div class="relative">
+            <input
+              id="global-search-input"
+              type="text"
+              placeholder="Tìm kiếm sản phẩm..."
+              class="w-64 bg-white border border-[#4A3B32]/20 rounded-full py-2 pl-5 pr-10 text-sm focus:outline-none focus:border-[#855E42] transition-colors text-[#4A3B32] placeholder-[#4A3B32]/50"
+              onkeypress="handleGlobalSearch(event)"
+            />
+            <button
+              onclick="executeSearch()"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A3B32]/50 hover:text-[#855E42] transition"
+            >
+              <i class="fas fa-search"></i>
+            </button>
+          </div>
+          <div class="flex gap-4 items-center">
+            <a href="javascript:void(0)" onclick="toggleAuthModal()" class="text-lg hover:text-wood-500">
+              <i class="far fa-user"></i>
+              <span class="hidden md:inline text-md font-medium ml-1">Đăng Nhập</span>
+            </a>
+
+            <a href="#" class="text-lg hover:text-wood-500 relative"
+              ><i class="fas fa-shopping-bag"></i
+              ><span
+                class="absolute -top-1 -right-2 bg-wood-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold"
+                >1</span
+              ></a
+            >
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <div class="container mx-auto px-6 py-12">
+      <div class="flex flex-col lg:flex-row gap-12">
+        <aside class="w-full lg:w-1/4 space-y-10" data-aos="fade-right" data-aos-duration="1000">
+          <div>
+            <h3 class="font-bold uppercase tracking-widest text-sm mb-4 flex items-center gap-2">
+              <i class="fas fa-sliders-h"></i> Filters
+            </h3>
+            <div class="relative">
+              <input
+                type="text"
+                placeholder="Search..."
+                class="w-full bg-white border border-wood-200 px-4 py-3 text-sm focus:outline-none focus:border-wood-500 transition rounded-sm"
+              />
+              <i class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2 text-wood-800/50"></i>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="font-bold text-xs uppercase tracking-widest text-wood-800/50 mb-4">Categories</h4>
+            <ul class="space-y-3 text-sm font-medium">
+              <li>
+                <a href="#" class="text-wood-500 font-bold flex justify-between"
+                  >Xà phòng thảo mộc <span class="text-xs bg-wood-500 text-white px-2 py-0.5 rounded-full">12</span></a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-wood-800/70 hover:text-wood-500 transition flex justify-between"
+                  >Nến thơm thư giãn
+                  <span class="text-xs bg-wood-200 text-wood-800 px-2 py-0.5 rounded-full">8</span></a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-wood-800/70 hover:text-wood-500 transition flex justify-between"
+                  >Tinh dầu nguyên chất
+                  <span class="text-xs bg-wood-200 text-wood-800 px-2 py-0.5 rounded-full">5</span></a
+                >
+              </li>
+              <li>
+                <a href="#" class="text-wood-800/70 hover:text-wood-500 transition flex justify-between"
+                  >Bộ quà tặng Spa <span class="text-xs bg-wood-200 text-wood-800 px-2 py-0.5 rounded-full">3</span></a
+                >
+              </li>
+            </ul>
+          </div>
+
+          <div>
+            <h4 class="font-bold text-xs uppercase tracking-widest text-wood-800/50 mb-4">Price Range</h4>
+            <div class="flex items-center justify-between text-sm font-bold text-wood-800 mb-2">
+              <span>$10</span>
+              <span>$100</span>
+            </div>
+            <div class="h-1 bg-wood-200 rounded-full relative">
+              <div class="absolute left-0 w-1/2 h-full bg-wood-500 rounded-full"></div>
+              <div
+                class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-wood-500 rounded-full border-2 border-white shadow cursor-pointer hover:scale-110 transition"
+              ></div>
+            </div>
+          </div>
+
+          <div>
+            <h4 class="font-bold text-xs uppercase tracking-widest text-wood-800/50 mb-4">Popular Tags</h4>
+            <div class="flex flex-wrap gap-2">
+              <span
+                class="px-3 py-1 border border-wood-200 bg-white text-xs font-medium hover:bg-wood-500 hover:text-white hover:border-wood-500 transition cursor-pointer"
+                >Organic</span
+              >
+              <span
+                class="px-3 py-1 border border-wood-200 bg-white text-xs font-medium hover:bg-wood-500 hover:text-white hover:border-wood-500 transition cursor-pointer"
+                >Handmade</span
+              >
+              <span class="px-3 py-1 border border-wood-500 bg-wood-500 text-white text-xs font-medium cursor-pointer"
+                >Lavender</span
+              >
+              <span
+                class="px-3 py-1 border border-wood-200 bg-white text-xs font-medium hover:bg-wood-500 hover:text-white hover:border-wood-500 transition cursor-pointer"
+                >Skin Care</span
+              >
+            </div>
+          </div>
+        </aside>
+
+        <section class="w-full lg:w-3/4">
+          <div
+            class="flex flex-col md:flex-row justify-between items-end md:items-center mb-8 border-b border-wood-800/10 pb-4"
+          >
+            <div>
+              <h1 id="page-title" class="text-3xl font-bold text-wood-800 mb-2">Tất cả sản phẩm</h1>
+              <p class="text-sm text-wood-800/60">Hiển thị 1-9 của 12 sản phẩm</p>
+            </div>
+            <div class="flex items-center gap-2 mt-4 md:mt-0">
+              <span class="text-xs font-bold uppercase tracking-wider text-wood-800/60">Sort by:</span>
+              <select
+                class="bg-transparent border-none text-sm font-bold text-wood-800 focus:outline-none cursor-pointer"
+              >
+                <option>Phổ biến nhất</option>
+                <option>Mới nhất</option>
+                <option>Giá thấp đến cao</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8" id="product-grid">
+            <div
+              class="group bg-white rounded-lg shadow-sm hover:shadow-xl transition duration-300 overflow-hidden relative"
+              data-aos="fade-up"
+              data-aos-duration="1000"
+            >
+              <div
+                class="absolute top-3 right-3 z-10 w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-md cursor-pointer hover:bg-wood-500 hover:text-white transition text-wood-800/40"
+              >
+                <i class="far fa-heart"></i>
+              </div>
+
+              <div class="relative overflow-hidden aspect-[4/5] bg-wood-200/20">
+                <img
+                  src="https://res.cloudinary.com/dbv2rcl3b/image/upload/v1770397500/Gemini_Generated_Image_hmhrz1hmhrz1hmhr_i0ogyk.png"
+                  class="w-full h-full object-cover transition duration-700 group-hover:scale-105"
+                />
+
+                <div
+                  class="absolute bottom-4 left-4 right-4 translate-y-full group-hover:translate-y-0 transition duration-300"
+                >
+                  <button
+                    class="w-full bg-wood-800 text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-wood-500 shadow-lg"
+                  >
+                    Thêm vào giỏ
+                  </button>
+                </div>
+              </div>
+
+              <div class="p-4 text-center">
+                <h3 class="text-lg font-bold text-wood-800 mb-1 group-hover:text-wood-500 transition">
+                  Xà Phòng Mắm Tôm
+                </h3>
+                <p class="text-xs text-wood-800/50 mb-3">Dưỡng Drama & Trị xao lon</p>
+                <span class="text-wood-800 font-bold">1.230.000đ</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-12 flex justify-center gap-2">
+            <button
+              class="w-10 h-10 border border-wood-800 bg-wood-800 text-white font-bold flex items-center justify-center hover:bg-wood-500 transition"
+            >
+              1
+            </button>
+            <button
+              class="w-10 h-10 border border-wood-800 text-wood-800 font-bold flex items-center justify-center hover:bg-wood-800 hover:text-white transition"
+            >
+              2
+            </button>
+            <button
+              class="w-10 h-10 border border-wood-800 text-wood-800 font-bold flex items-center justify-center hover:bg-wood-800 hover:text-white transition"
+            >
+              <i class="fas fa-chevron-right"></i>
+            </button>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <footer class="border-t border-wood-800/20 mt-20 bg-wood-50 pb-10">
+      <div class="container mx-auto px-6 py-10 text-center">
+        <h4 class="text-sm font-bold uppercase tracking-[0.15em] mb-4 text-wood-800">EMEE CARE</h4>
+        <p class="text-[10px] font-bold text-wood-800/40 uppercase tracking-widest">
+          © 2026 Emee Care. All rights reserved.
+        </p>
+      </div>
+    </footer>
+    <div
+      id="auth-modal"
+      class="hidden fixed inset-0 z-[9999] overflow-y-auto"
+      aria-labelledby="modal-title"
+      role="dialog"
+      aria-modal="true"
+    >
+      <div class="flex items-center justify-center min-h-screen px-4 text-center backdrop-blur-sm">
+        <div
+          class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+          aria-hidden="true"
+          onclick="toggleAuthModal()"
+        ></div>
+
+        <div
+          class="relative bg-[#FDFBF7] rounded-xl shadow-2xl w-full max-w-md p-8 text-left transform transition-all animate-[fadeIn_0.3s_ease-out] border-t-4 border-[#855E42]"
+        >
+          <button
+            onclick="toggleAuthModal()"
+            class="absolute top-4 right-4 text-[#4A3B32]/40 hover:text-red-500 transition"
+          >
+            <i class="fas fa-times text-xl"></i>
+          </button>
+
+          <div class="text-center mb-6">
+            <h2 id="modal-title" class="text-2xl font-bold text-brown-800">Đăng nhập hệ thống</h2>
+            <p class="text-sm text-gray-500 mt-1">Dành cho Quản trị viên</p>
+          </div>
+
+          <form id="login-form" action="/user/login" method="POST" class="space-y-5">
+            <div
+              id="login-error"
+              class="text-red-500 text-sm p-2 bg-red-50 rounded text-center hidden font-bold border border-red-100"
+            ></div>
+
+            <div>
+              <label class="block text-xs font-bold text-[#4A3B32] uppercase tracking-wide mb-1">Email</label>
+              <input
+                type="email"
+                name="email"
+                class="w-full px-4 py-2.5 border border-[#4A3B32]/30 bg-white rounded-lg focus:outline-none focus:border-[#855E42] transition text-[#4A3B32]"
+                required
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-[#4A3B32] uppercase tracking-wide mb-1">Mật khẩu</label>
+              <input
+                type="password"
+                name="password"
+                class="w-full px-4 py-2.5 border border-[#4A3B32]/30 bg-white rounded-lg focus:outline-none focus:border-[#855E42] transition text-[#4A3B32]"
+                required
+              />
+            </div>
+
+            <div class="flex justify-between items-center text-xs">
+              <a href="#" class="text-[#855E42] hover:underline font-bold">Quên mật khẩu?</a>
+            </div>
+
+            <button
+              type="submit"
+              class="w-full bg-[#855E42] hover:bg-[#4A3B32] text-white font-bold py-3 rounded-lg transition shadow-lg uppercase tracking-widest text-sm"
+            >
+              Đăng Nhập
+            </button>
+
+            <div class="text-center text-xs text-[#4A3B32]/60 mt-4">
+              Bạn chưa có tài khoản?
+              <a
+                href="javascript:void(0)"
+                onclick="switchToRegister()"
+                class="text-[#855E42] font-bold hover:underline ml-1"
+              >
+                Đăng Ký ngay
+              </a>
+            </div>
+          </form>
+
+          <form id="register-form" class="space-y-4 hidden">
+            <div>
+              <label class="block text-xs font-bold text-[#4A3B32] uppercase tracking-wide mb-1">Họ và Tên</label>
+              <input
+                type="text"
+                name="name"
+                class="w-full px-4 py-2.5 border border-[#4A3B32]/30 bg-white rounded-lg focus:outline-none focus:border-[#855E42] transition"
+                required
+              />
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-[#4A3B32] uppercase tracking-wide mb-1">Email</label>
+              <input
+                type="email"
+                name="email"
+                class="w-full px-4 py-2.5 border border-[#4A3B32]/30 bg-white rounded-lg focus:outline-none focus:border-[#855E42] transition"
+                required
+              />
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-xs font-bold text-[#4A3B32] uppercase tracking-wide mb-1">Mật khẩu</label>
+                <input
+                  type="password"
+                  name="password"
+                  class="w-full px-4 py-2.5 border border-[#4A3B32]/30 bg-white rounded-lg focus:outline-none focus:border-[#855E42] transition"
+                  required
+                />
+              </div>
+              <div>
+                <label class="block text-xs font-bold text-[#4A3B32] uppercase tracking-wide mb-1">Nhập lại MK</label>
+                <input
+                  type="password"
+                  name="confirm_password"
+                  class="w-full px-4 py-2.5 border border-[#4A3B32]/30 bg-white rounded-lg focus:outline-none focus:border-[#855E42] transition"
+                  required
+                />
+              </div>
+            </div>
+            <div>
+              <label class="block text-xs font-bold text-[#4A3B32] uppercase tracking-wide mb-1">
+                Ngày sinh <span class="text-gray-400 font-normal normal-case">(Không bắt buộc)</span>
+              </label>
+              <input
+                type="date"
+                name="date_of_birth"
+                class="w-full px-4 py-2.5 border border-[#4A3B32]/30 bg-white rounded-lg focus:outline-none focus:border-[#855E42] transition text-[#4A3B32]"
+              />
+            </div>
+
+            <p id="form-message" class="text-center font-semibold text-red-500 text-sm"></p>
+
+            <button
+              type="submit"
+              class="w-full bg-[#855E42] hover:bg-[#4A3B32] text-white font-bold py-3 rounded-lg transition shadow-lg uppercase tracking-widest text-sm"
+            >
+              Đăng Ký
+            </button>
+
+            <div class="text-center text-xs text-[#4A3B32]/60 mt-4">
+              Bạn đã có tài khoản?
+              <a
+                href="javascript:void(0)"
+                onclick="switchToLogin()"
+                class="text-[#855E42] font-bold hover:underline ml-1"
+              >
+                Đăng Nhập
+              </a>
+            </div>
+          </form>
+
+          <div
+            id="success-popup"
+            class="hidden absolute inset-0 bg-white/95 rounded-xl z-50 flex items-center justify-center backdrop-blur-sm"
+          >
+            <div class="text-center animate-[bounce_0.5s]">
+              <div
+                class="w-16 h-16 mx-auto mb-4 rounded-full bg-green-100 flex items-center justify-center border-2 border-green-500"
+              >
+                <span class="text-green-600 text-3xl font-bold">✓</span>
+              </div>
+              <h4 class="text-xl font-bold text-[#4A3B32] mb-1">Đăng ký thành công!</h4>
+              <p class="text-sm text-[#4A3B32]/60">Vui lòng đăng nhập để tiếp tục.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script src="/js/products.js"></script>
+    <script src="/js/auth.js"></script>
+  </body>
+</html>
