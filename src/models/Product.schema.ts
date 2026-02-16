@@ -4,7 +4,7 @@ export default class Product {
   _id?: ObjectId
   name: string
   price: number
-  image: string // Tạm thời lưu link ảnh (URL) cho đơn giản
+  images: string[]
   description: string
   category: string
   created_at?: Date
@@ -14,7 +14,7 @@ export default class Product {
     this._id = product._id
     this.name = product.name
     this.price = product.price
-    this.image = product.image
+    this.images = product.images || []
     this.description = product.description || ''
     this.category = product.category || 'General'
     this.created_at = product.created_at || new Date()

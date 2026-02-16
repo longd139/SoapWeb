@@ -1,58 +1,10 @@
-// tailwind.config.js
-/** @type {import('tailwindcss').Config} */
-module.exports = {
-  content: ['./src/**/*.{html,js}', './views/**/*.html'], // Đảm bảo trỏ đúng các file HTML của bạn
-  theme: {
-    extend: {
-      colors: {
-        // Bộ màu nâu chủ đạo
-        brown: {
-          50: '#F9F6F4', // Nền kem rất nhạt
-          100: '#F5F1EE', // Nền kem chính (Main Background)
-          200: '#ECE5DF', // Viền nhạt
-          300: '#D5C8BD',
-          400: '#BFA99A',
-          500: '#855E42', // Màu điểm nhấn 2 (Hover, Secondary)
-          600: '#6D4C35',
-          700: '#573D2A',
-          800: '#4A3B32', // Màu chính đậm nhất (Primary Text/Bg)
-          900: '#3D3029'
-        }
-      },
-      fontFamily: {
-        // Nếu bạn có font riêng thì thêm vào đây
-        sans: ['Inter', 'ui-sans-serif', 'system-ui']
-      }
-    }
-  },
-  plugins: []
-}
-
+// Biến lưu trữ các link ảnh sau khi upload xong
+window.globalImageUrls = []
 // 1. Kiểm tra Token
 const accessToken = localStorage.getItem('access_token')
 const userProfile = localStorage.getItem('user_profile')
 
 // 2. Nếu không có token -> Đá về Login ngay lập tức
-function checkAccess(access_token) {
-  if (!accessToken || !userProfile) {
-    alert('⛔ Bạn chưa đăng nhập!')
-    window.location.href = '/' // Hoặc trang login
-  }
-}
-checkAccess(accessToken)
-// 3. Kiểm tra Role (Parse JSON từ LocalStorage)
-// Lưu ý: Đây chỉ là chặn UI, hacker vẫn có thể sửa LocalStorage
-// Nhưng không sao, vì API lấy dữ liệu thật đã được Server bảo vệ.
-try {
-  const user = JSON.parse(userProfile)
-  // Giả sử Role Admin là 0
-  if (user.role !== 0) {
-    alert('⛔ Bạn không có quyền truy cập trang này!')
-    window.location.href = '/'
-  }
-} catch (e) {
-  window.location.href = '/'
-}
 
 // Hàm Javascript để vẽ bảng (Thêm vào script cuối file dashboard.html)
 async function loadPendingUsers() {
@@ -269,33 +221,574 @@ function switchTab(element, title) {
   }
 }
 
-async function handleAddProduct(event) {
-  event.preventDefault()
+// document.addEventListener('DOMContentLoaded', () => {
+//   const addProductForm = document.getElementById('add-product-form')
+//   if (addProductForm) {
+//     addProductForm.addEventListener('submit', handleAddProduct)
+//   }
+// })
 
-  // 1. Lấy dữ liệu từ form
+// Biến toàn cục để theo dõi trạng thái sửa (Mặc định là null)
+window.currentEditingId = null
+
+window.handleAddProduct = async function (event) {
+  event.preventDefault() // Chặn load lại trang
+
   const form = event.target
   const formData = new FormData(form)
   const data = Object.fromEntries(formData.entries())
 
+  // 🛠️ 1. XỬ LÝ DỮ LIỆU ĐẦU VÀO
+  // Chuyển đổi 'price' và 'quantity' từ chuỗi sang số
+  if (data.price) data.price = Number(data.price)
+  if (data.quantity) data.quantity = Number(data.quantity)
+
+  // Xử lý mảng ảnh (Lấy từ biến toàn cục window.globalImageUrls)
+  // Ưu tiên lấy từ biến toàn cục vì đó là nơi lưu ảnh sau khi upload/xóa
+  data.images = window.globalImageUrls || []
+
+  // 🛠️ 2. XÁC ĐỊNH CHẾ ĐỘ: THÊM HAY SỬA?
+  let apiUrl = '/products/add-product' // Mặc định là link thêm mới
+  let apiMethod = 'POST' // Mặc định là method POST
+  let successMessage = '✅ Đăng sản phẩm thành công!'
+
+  // Nếu đang có ID cần sửa -> Chuyển sang chế độ UPDATE
+  if (window.currentEditingId) {
+    apiUrl = `/products/${window.currentEditingId}` // Link sửa (theo ID)
+    apiMethod = 'PUT' // Method PUT
+    successMessage = '✅ Cập nhật sản phẩm thành công!'
+  }
+
   try {
-    // 2. Gửi lên API Private (Kèm Token Admin)
-    const response = await fetch('/products', {
-      method: 'POST',
+    // 3. Gửi lên API (Dùng URL và Method động đã xác định ở trên)
+    const response = await fetch(apiUrl, {
+      method: apiMethod,
       headers: {
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + localStorage.getItem('access_token') // 👈 QUAN TRỌNG
+        Authorization: 'Bearer ' + localStorage.getItem('access_token')
       },
       body: JSON.stringify(data)
     })
 
+    const result = await response.json()
+
     if (response.ok) {
-      alert('✅ Đăng sản phẩm thành công!')
-      form.reset() // Xóa trắng form
-      // Có thể gọi hàm loadProducts() để cập nhật lại danh sách bên dưới
+      // ✅ THÀNH CÔNG
+      if (typeof showToast === 'function') {
+        showToast(successMessage, 'success')
+      } else {
+        alert(successMessage)
+      }
+
+      // 4. RESET FORM & TRẠNG THÁI
+      form.reset()
+      document.getElementById('preview-container').innerHTML = ''
+      document.getElementById('product-images-urls').value = ''
+      window.globalImageUrls = []
+
+      // Quan trọng: Reset biến ID về null để lần sau bấm nút sẽ là Thêm Mới
+      window.currentEditingId = null
+
+      // Trả lại giao diện nút bấm về ban đầu (Nút Thêm mới)
+      const btnSubmit = document.getElementById('btn-submit')
+      btnSubmit.innerHTML = `<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Đăng sản phẩm`
+      btnSubmit.classList.add('bg-brown-600')
+      btnSubmit.classList.remove('bg-blue-600', 'hover:bg-blue-700')
+
+      // Xóa nút "Hủy bỏ" nếu đang hiển thị
+      const btnCancel = document.getElementById('btn-cancel-edit')
+      if (btnCancel) btnCancel.remove()
+
+      // Tải lại bảng danh sách
+      if (typeof loadAdminProducts === 'function') {
+        loadAdminProducts()
+      }
     } else {
-      alert('❌ Lỗi: Bạn không có quyền hoặc dữ liệu sai')
+      // ❌ LỖI TỪ SERVER
+      const msg = result.message || 'Có lỗi xảy ra'
+      if (typeof showToast === 'function') {
+        showToast('❌ Lỗi: ' + msg, 'error')
+      } else {
+        alert('❌ Lỗi: ' + msg)
+      }
     }
   } catch (error) {
     console.error(error)
+    if (typeof showToast === 'function') {
+      showToast('❌ Lỗi kết nối server', 'error')
+    } else {
+      alert('❌ Lỗi kết nối server')
+    }
   }
 }
+
+async function loadAdminProducts() {
+  const tableBody = document.getElementById('admin-product-list')
+
+  try {
+    const response = await fetch('/products/list-all')
+    const data = await response.json()
+    const products = data.result || []
+
+    window.allProducts = products // lưu Danh sách
+
+    if (products.length === 0) {
+      tableBody.innerHTML = `
+        <tr>
+            <td colspan="5" class="px-6 py-10 text-center text-gray-500">
+                <div class="flex flex-col items-center justify-center">
+                    <i class="fas fa-box-open text-4xl text-brown-200 mb-3"></i>
+                    <p>Chưa có sản phẩm nào được đăng.</p>
+                </div>
+            </td>
+        </tr>`
+      return
+    }
+
+    const html = products
+      .map((product) => {
+        // Format giá tiền
+        const price = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(product.price)
+
+        // 👇 SỬA ĐOẠN NÀY: Ưu tiên lấy ảnh đầu tiên trong mảng images
+        let displayImage = 'https://placehold.co/150?text=No+Image' // Dùng trang này ổn định hơn
+
+        if (product.images && product.images.length > 0) {
+          displayImage = product.images[0] // Lấy ảnh đầu tiên
+        } else if (product.image) {
+          displayImage = product.image // Fallback cho dữ liệu cũ (nếu có)
+        }
+
+        // Random tồn kho
+        const stock = product.quantity || Math.floor(Math.random() * 50) + 1
+        const stockColor = stock < 10 ? 'text-red-600 bg-red-50' : 'text-green-600 bg-green-50'
+
+        return `
+            <tr class="hover:bg-[#FDFBF7] transition duration-150 group">
+                <td class="px-6 py-4">
+                    <div class="flex items-center">
+                        <div class="h-12 w-12 flex-shrink-0 overflow-hidden rounded-md border border-brown-200">
+                            <img src="${displayImage}" class="h-full w-full object-cover object-center" alt="${product.name}">
+                        </div>
+                        <div class="ml-4">
+                            <div class="font-medium text-brown-800 text-sm">${product.name}</div>
+                            <div class="text-xs text-gray-400 mt-0.5 max-w-[200px] truncate">${product._id}</div>
+                        </div>
+                    </div>
+                </td>
+                
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="text-sm font-bold text-brown-600">${price}</span>
+                </td>
+                
+                <td class="px-6 py-4 whitespace-nowrap">
+                    <span class="px-2 py-1 inline-flex text-xs leading-5 font-semibold rounded-full bg-brown-100 text-brown-800 border border-brown-200">
+                        ${product.category || 'Mặc định'}
+                    </span>
+                </td>
+                
+                <td class="px-6 py-4 whitespace-nowrap text-center">
+                    <span class="px-2 py-1 text-xs font-bold rounded ${stockColor}">
+                        ${stock}
+                    </span>
+                </td>
+
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                  <div class="flex justify-end gap-2">
+                      <button 
+            onclick="startEditProduct('${product._id}')" 
+            class="flex items-center gap-2 bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white px-3 py-2 rounded-lg transition-all duration-200 font-medium border border-blue-200"
+            title="Chỉnh sửa"
+        >
+            <i class="fas fa-pencil-alt"></i>
+            <span>Sửa</span>
+        </button>
+
+                      <button 
+                          onclick="deleteProduct('${product._id}')" 
+                          class="flex items-center gap-2 bg-red-100 text-red-700 hover:bg-red-600 hover:text-white px-3 py-2 rounded-lg transition-all duration-200 font-medium"
+                          title="Xóa sản phẩm"
+                      >
+                          <i class="fas fa-trash-alt"></i>
+                          <span>Xóa</span>
+                      </button>
+                  </div>
+              </td>
+            </tr>
+            `
+      })
+      .join('')
+
+    tableBody.innerHTML = html
+  } catch (error) {
+    console.error('Lỗi tải sản phẩm:', error)
+    tableBody.innerHTML = `
+        <tr>
+            <td colspan="5" class="px-6 py-8 text-center text-red-500">
+                <i class="fas fa-exclamation-triangle mb-2"></i><br>
+                Không thể tải dữ liệu. Vui lòng thử lại sau.
+            </td>
+        </tr>`
+  }
+}
+
+// 2. Hàm Xóa Sản Phẩm (Đã cập nhật)
+async function deleteProduct(id) {
+  // Dùng confirm mặc định của trình duyệt (hoặc sau này thay bằng Modal riêng)
+  if (!confirm('⚠️ Bạn có chắc chắn muốn xóa sản phẩm này không?')) {
+    return
+  }
+
+  try {
+    const response = await fetch(`/products/${id}`, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + localStorage.getItem('access_token')
+      }
+    })
+
+    const result = await response.json()
+
+    if (response.ok) {
+      // ✅ THÀNH CÔNG: Hiện thông báo xanh
+      showToast('Xóa sản phẩm thành công!', 'success')
+
+      // Load lại bảng
+      loadAdminProducts()
+    } else {
+      // ❌ THẤT BẠI: Hiện thông báo đỏ
+      showToast(result.message || 'Lỗi khi xóa sản phẩm', 'error')
+    }
+  } catch (error) {
+    console.error(error)
+    showToast('Lỗi kết nối server', 'error')
+  }
+}
+
+// 1. Hàm hiển thị thông báo đẹp (Thay thế alert)
+function showToast(message, type = 'success') {
+  const container = document.getElementById('toast-container')
+
+  // Tạo thẻ thông báo
+  const toast = document.createElement('div')
+
+  // Cấu hình màu sắc icon dựa trên type
+  const isSuccess = type === 'success'
+  const bgColor = isSuccess ? 'bg-green-500' : 'bg-red-500'
+  const icon = isSuccess ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-exclamation-circle"></i>'
+
+  // Style Tailwind cho thông báo (Slide từ phải sang)
+  toast.className = `${bgColor} text-white px-6 py-3 rounded shadow-lg flex items-center gap-3 transform transition-all duration-300 translate-x-full opacity-0`
+  toast.innerHTML = `
+      <div class="text-xl">${icon}</div>
+      <div class="font-medium text-sm">${message}</div>
+  `
+
+  // Thêm vào màn hình
+  container.appendChild(toast)
+
+  // Hiệu ứng hiện ra (sau 10ms để trình duyệt kịp render)
+  setTimeout(() => {
+    toast.classList.remove('translate-x-full', 'opacity-0')
+  }, 10)
+
+  // Tự động biến mất sau 3 giây
+  setTimeout(() => {
+    toast.classList.add('translate-x-full', 'opacity-0')
+    // Xóa khỏi DOM sau khi animation kết thúc
+    setTimeout(() => {
+      toast.remove()
+    }, 300)
+  }, 3000)
+}
+// Chạy hàm khi trang tải xong
+document.addEventListener('DOMContentLoaded', loadAdminProducts)
+
+async function handlePreviewImages(event) {
+  const files = event.target.files
+  const previewContainer = document.getElementById('preview-container')
+  const loadingScreen = document.getElementById('upload-loading')
+  const btnSubmit = document.getElementById('btn-submit')
+
+  if (files.length === 0) return
+
+  loadingScreen.classList.remove('hidden')
+  btnSubmit.disabled = true
+
+  btnSubmit.innerHTML = `
+    <div class="animate-spin rounded-full h-5 w-5 border-[3px] border-gray-200 border-t-brown-500 mr-3"></div>
+    Đang xử lý...
+`
+
+  btnSubmit.classList.add('opacity-75', 'cursor-not-allowed')
+  previewContainer.innerHTML = ''
+
+  // Cấu hình nén ảnh
+  const options = {
+    maxSizeMB: 1, // Giữ ảnh dưới 1MB
+    maxWidthOrHeight: 1920, // Giữ độ phân giải Full HD (đủ nét cho web)
+    useWebWorker: true, // Dùng luồng phụ để không bị đơ trình duyệt
+    fileType: 'image/jpeg' // Chuyển hết về JPEG cho nhẹ
+  }
+
+  const formData = new FormData()
+
+  try {
+    // 2. Nén từng ảnh (Chạy song song)
+    const compressedFilesPromises = [...files].map(async (file) => {
+      // Hiện preview ngay lập tức (dùng ảnh gốc cho nhanh)
+      const img = document.createElement('img')
+      img.src = URL.createObjectURL(file)
+      img.className = 'w-20 h-20 object-cover rounded border border-gray-300 opacity-50'
+      previewContainer.appendChild(img)
+
+      // Thực hiện nén
+      const compressedFile = await imageCompression(file, options)
+
+      return compressedFile
+    })
+
+    // Đợi tất cả ảnh nén xong
+    const compressedFiles = await Promise.all(compressedFilesPromises)
+
+    // 3. Đưa ảnh đã nén vào FormData
+    for (const file of compressedFiles) {
+      formData.append('images', file)
+    }
+
+    // 4. Gửi lên Server (Lúc này file rất nhẹ, gửi cực nhanh)
+    const res = await fetch('/admin/medias/upload-multiple', {
+      method: 'POST',
+      body: formData
+    })
+
+    const data = await res.json()
+
+    if (res.ok) {
+      const newUrls = data.result || data.urls
+      window.globalImageUrls = [...(window.globalImageUrls || []), ...newUrls]
+
+      document.getElementById('product-images-urls').value = JSON.stringify(window.globalImageUrls)
+
+      // Làm rõ ảnh preview
+      const imgs = previewContainer.getElementsByTagName('img')
+      for (let img of imgs) img.classList.remove('opacity-50')
+      console.log('Upload successfull !')
+    } else {
+      alert('Lỗi upload: ' + data.message)
+    }
+  } catch (err) {
+    console.error(err)
+    alert('Lỗi: ' + (err.message || 'Không thể xử lý ảnh'))
+  } finally {
+    loadingScreen.classList.add('hidden')
+    btnSubmit.disabled = false
+    // Trả lại nút ban đầu
+    btnSubmit.innerHTML = `
+            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+            </svg>
+            Đăng sản phẩm
+        `
+    btnSubmit.classList.remove('opacity-75', 'cursor-not-allowed')
+    event.target.value = ''
+  }
+}
+
+// Biến toàn cục để biết đang sửa sản phẩm nào (null = đang thêm mới)
+let currentEditingId = null
+
+// 1. HÀM BẮT ĐẦU SỬA (KHI BẤM NÚT XANH)
+// 1. Hàm Mở Modal và Đổ dữ liệu
+function startEditProduct(id) {
+  const product = window.allProducts.find((p) => p._id === id)
+  if (!product) return
+  // Giả sử product.price là 5000000
+  const priceDisplay = document.getElementById('price-display')
+  const priceRaw = document.getElementById('price-raw')
+
+  if (priceDisplay && priceRaw) {
+    priceRaw.value = product.price // Lưu 5000000
+    priceDisplay.value = new Intl.NumberFormat('de-DE').format(product.price) // Hiển thị 5.000.000
+  }
+
+  window.currentEditingId = id
+  const modal = document.getElementById('edit-modal')
+  const form = document.getElementById('edit-product-form')
+
+  // Đổ dữ liệu vào form modal
+  form.elements['name'].value = product.name
+  form.elements['price'].value = product.price
+  form.elements['quantity'].value = product.quantity || 0
+  form.elements['description'].value = product.description || ''
+
+  // Xử lý ảnh
+  const images = product.images || []
+  window.globalImageUrls = [...images]
+  document.getElementById('edit-product-images-urls').value = JSON.stringify(images)
+
+  const preview = document.getElementById('edit-preview-container')
+  preview.innerHTML = ''
+  images.forEach((url) => {
+    const img = document.createElement('img')
+    img.src = url
+    img.className = 'w-20 h-20 object-cover rounded-lg border shadow-sm'
+    preview.appendChild(img)
+  })
+
+  // Hiện Modal với hiệu ứng mượt
+  modal.classList.remove('hidden')
+  document.body.style.overflow = 'hidden' // Chặn cuộn trang web bên dưới
+}
+
+// 2. Hàm Đóng Modal
+function closeEditModal() {
+  const modal = document.getElementById('edit-modal')
+  modal.classList.add('hidden')
+  document.body.style.overflow = 'auto' // Cho phép cuộn lại
+  window.currentEditingId = null
+}
+
+// 3. Xử lý Submit Form Chỉnh Sửa
+document.getElementById('edit-product-form').onsubmit = async function (e) {
+  e.preventDefault()
+
+  const formData = new FormData(this)
+  const data = Object.fromEntries(formData.entries())
+
+  data.price = Number(data.price)
+  data.quantity = Number(data.quantity)
+  data.images = window.globalImageUrls // Lấy từ mảng ảnh đã xử lý
+
+  try {
+    const res = await fetch(`/products/${window.currentEditingId}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + localStorage.getItem('access_token')
+      },
+      body: JSON.stringify(data)
+    })
+
+    if (res.ok) {
+      showToast('✅ Cập nhật sản phẩm thành công!', 'success')
+      closeEditModal()
+      loadAdminProducts() // Tải lại danh sách
+    } else {
+      const err = await res.json()
+      showToast('❌ Lỗi: ' + err.message, 'error')
+    }
+  } catch (error) {
+    showToast('❌ Lỗi kết nối server', 'error')
+  }
+}
+
+function handlePriceInput(input) {
+  // 1. Lấy giá trị, xóa bỏ mọi ký tự không phải số
+  let rawValue = input.value.replace(/\D/g, '')
+
+  // 2. Cập nhật giá trị số nguyên vào input ẩn để gửi lên server
+  const rawInput = document.getElementById('price-raw')
+  if (rawInput) rawInput.value = rawValue
+
+  // 3. Định dạng hiển thị có dấu chấm (Kiểu Đức/Việt Nam dùng dấu chấm phân cách)
+  if (rawValue !== '') {
+    input.value = new Intl.NumberFormat('de-DE').format(rawValue)
+  } else {
+    input.value = ''
+  }
+}
+
+// 1. Hàm hiện/ẩn ô nhập danh mục mới
+function toggleNewCategoryInput() {
+  const wrapper = document.getElementById('new-category-wrapper')
+  wrapper.classList.toggle('hidden')
+  if (!wrapper.classList.contains('hidden')) {
+    document.getElementById('new-category-input').focus()
+  }
+}
+
+// 2. Hàm xử lý thêm danh mục mới vào thẻ Select
+// 1. Hàm thêm danh mục mới vào Dropdown Custom
+function addNewCategory() {
+  const input = document.getElementById('new-category-input')
+  const list = document.getElementById('options-list')
+  const name = input.value.trim()
+
+  if (!name) return showToast('Vui lòng nhập tên!', 'error')
+
+  const value = name.toLowerCase().replace(/\s+/g, '-')
+
+  // Kiểm tra trùng trong danh sách div
+  const exists = Array.from(list.querySelectorAll('.option-item')).some((el) => el.getAttribute('data-value') === value)
+  if (exists) return showToast('Danh mục đã tồn tại!', 'error')
+
+  // Tạo phần tử div mới thay vì Option
+  const newDiv = document.createElement('div')
+  newDiv.className = 'option-item p-2 hover:bg-brown-50 cursor-pointer text-brown-800 transition rounded-md mx-1 my-0.5'
+  newDiv.setAttribute('data-value', value)
+  newDiv.innerHTML = name
+  newDiv.onclick = () => selectOption(value, name)
+
+  list.appendChild(newDiv)
+
+  // Tự động chọn luôn
+  selectOption(value, name)
+
+  input.value = ''
+  toggleNewCategoryInput()
+  showToast('Đã thêm danh mục mới', 'success')
+}
+
+// 2. Hàm xóa danh mục đang được chọn
+function removeSelectedCategory() {
+  const rawInput = document.getElementById('category-raw-value')
+  const currentValue = rawInput.value
+
+  if (!currentValue) return showToast('Vui lòng chọn danh mục để xóa!', 'error')
+
+  if (confirm('Bạn có chắc chắn muốn xóa danh mục này?')) {
+    const list = document.getElementById('options-list')
+    // Tìm div có data-value tương ứng để xóa
+    const itemToDelete = list.querySelector(`[data-value="${currentValue}"]`)
+
+    if (itemToDelete) {
+      itemToDelete.remove()
+      // Reset hiển thị
+      document.getElementById('selected-category').querySelector('span').innerText = 'Chọn danh mục'
+      rawInput.value = ''
+      showToast('Đã xóa danh mục', 'success')
+    }
+  }
+}
+// 1. Đóng/Mở Dropdown
+function toggleDropdown() {
+  const options = document.getElementById('dropdown-options')
+  const icon = document.getElementById('dropdown-icon')
+
+  options.classList.toggle('hidden')
+  icon.classList.toggle('rotate-180')
+}
+
+// 2. Chọn một Option
+function selectOption(value, label) {
+  // Hiển thị tên lên ô chọn
+  document.getElementById('selected-category').querySelector('span').innerText = label
+  document.getElementById('selected-category').querySelector('span').classList.add('text-brown-900')
+
+  // Lưu giá trị vào input ẩn để gửi Backend
+  document.getElementById('category-raw-value').value = value
+
+  // Đóng dropdown
+  toggleDropdown()
+}
+
+// 3. Đóng dropdown khi bấm ra ngoài vùng chọn
+window.addEventListener('click', function (e) {
+  const select = document.getElementById('category-custom-select')
+  if (!select.contains(e.target)) {
+    document.getElementById('dropdown-options').classList.add('hidden')
+    document.getElementById('dropdown-icon').classList.remove('rotate-180')
+  }
+})

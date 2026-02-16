@@ -1,6 +1,12 @@
 import express from 'express'
 import { wrap } from 'lodash'
-import { uploadSingleImageController, uploadSingleVideoController } from '~/controllers/medias.controllers'
+
+import {
+  uploadImagesController,
+  uploadSingleImageController,
+  uploadSingleVideoController
+} from '~/controllers/medias.controllers'
+import { uploadCloud } from '~/utils/cloudinary'
 import { wrapAsync } from '~/utils/handler'
 const mediasRoutes = express.Router()
 /*
@@ -20,4 +26,6 @@ mediasRoutes.post(
   '/upload-video', //
   wrapAsync(uploadSingleVideoController)
 )
+
+mediasRoutes.post('/upload-multiple', uploadCloud.array('images', 10), uploadImagesController)
 export default mediasRoutes

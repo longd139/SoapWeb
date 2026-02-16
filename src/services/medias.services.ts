@@ -28,5 +28,6 @@ class MediasServices {
     return `http://localhost:3000/static/video/${file.newFilename}`
   }
 }
+
 const mediasServices = new MediasServices()
 export default mediasServices

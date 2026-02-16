@@ -5,6 +5,9 @@ import { pendingController } from '~/controllers/admin.controllers'
 import { approveUserController, dashboardController } from '~/controllers/users.controllers'
 import { checkRole } from '~/middlewares/auth.middlewares'
 import { accessTokenValidator } from '~/middlewares/users.middleware'
+import { uploadCloud } from '~/utils/cloudinary'
+import mediasRoutes from './medias.routes'
+
 const adminRoute = express.Router()
 
 adminRoute.get('/dashboard', dashboardController)
@@ -30,4 +33,5 @@ adminRoute.get(
   checkRole([USER_ROLE.Admin]),
   pendingController
 )
+adminRoute.use('/medias', mediasRoutes)
 export default adminRoute

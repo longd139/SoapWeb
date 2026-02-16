@@ -23,7 +23,7 @@ export const serveImageController = async (
   req: Request, //
   res: Response
 ) => {
-  const { filename } = req.params
+  const { filename } = req.params as { filename: string }
   return res.sendFile(path.resolve(UPLOAD_IMAGE_DIR, filename), (error) => {
     if (error) {
       return res.status((error as any).status || 500).json({
@@ -48,12 +48,33 @@ export const serveVideoController = async (
   req: Request, //
   res: Response
 ) => {
-  const { filename } = req.params
+  const { filename } = req.params as { filename: string }
   return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, filename), (error) => {
     if (error) {
       return res.status((error as any).status || 500).json({
         message: 'File not found'
       })
     }
+  })
+}
+
+export const uploadImagesController = (req: Request, res: Response) => {
+  // 1. Ép kiểu req.files về mảng Multer File
+  const files = req.files as Express.Multer.File[]
+
+  // 2. Kiểm tra validate
+  if (!files || files.length === 0) {
+    return res.status(400).json({
+      message: 'Chưa chọn ảnh nào'
+    })
+  }
+
+  // 3. Mapper lấy đường dẫn ảnh (Cloudinary đã upload xong và gán path vào đây)
+  const urls = files.map((file) => file.path)
+
+  // 4. Trả về kết quả
+  return res.json({
+    message: 'Upload thành công',
+    result: urls // Mình đổi key thành 'result' cho đồng bộ với các API khác của bạn
   })
 }

@@ -1,5 +1,11 @@
 import { Router } from 'express'
-import { createProductController, getProductsController } from '~/controllers/products.controllers'
+import {
+  createProductController,
+  deleteProductController,
+  getAllProductsController,
+  getProductsController,
+  updateProductController
+} from '~/controllers/products.controllers'
 import { accessTokenValidator } from '~/middlewares/users.middleware'
 import { USER_ROLE } from '~/constants/enums'
 import { checkRole } from '~/middlewares/auth.middlewares'
@@ -21,16 +27,26 @@ productsRouter.get('/', (req, res) => {
 
 productsRouter.get('/list', getProductsController)
 
+productsRouter.get('/list-all', getAllProductsController)
 /**
  * 2. API BẢO MẬT (Private)
  * Phải có Token + Phải là Admin mới được gọi
  * Dùng cho trang Dashboard Admin để đăng bài
  */
 productsRouter.post(
-  '/',
+  '/add-product',
   accessTokenValidator, // Check đăng nhập
   checkRole([USER_ROLE.Admin]), // Check quyền Admin
   createProductController // Cho phép tạo
 )
 
+productsRouter.delete(
+  // 👈 Method là DELETE
+  '/:id',
+  accessTokenValidator,
+  checkRole([USER_ROLE.Admin]),
+  deleteProductController
+)
+
+productsRouter.put('/:id', accessTokenValidator, checkRole([USER_ROLE.Admin]), updateProductController)
 export default productsRouter

@@ -78,7 +78,7 @@ async function loadProducts() {
 
               <div class="relative overflow-hidden aspect-[4/5] bg-wood-200/20">
                 <img
-                  src="${product.image}"
+                  src="${product.images}"
                   alt="${product.name}"
                   onerror="this.src='https://via.placeholder.com/400x500?text=No+Image'" 
                   class="w-full h-full object-cover transition duration-700 group-hover:scale-105"
@@ -88,7 +88,7 @@ async function loadProducts() {
                   class="absolute bottom-4 left-4 right-4 translate-y-full group-hover:translate-y-0 transition duration-300"
                 >
                   <button
-                    class="w-full bg-wood-800 text-white py-3 text-xs font-bold uppercase tracking-widest hover:bg-wood-500 shadow-lg"
+                    class="w-full bg-wood-800 text-white   py-3 text-xs font-bold uppercase tracking-widest hover:bg-wood-500 shadow-lg"
                   >
                     Thêm vào giỏ
                   </button>
