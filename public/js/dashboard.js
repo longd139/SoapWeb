@@ -469,37 +469,36 @@ async function deleteProduct(id) {
 // 1. Hàm hiển thị thông báo đẹp (Thay thế alert)
 function showToast(message, type = 'success') {
   const container = document.getElementById('toast-container')
+  if (!container) return // Tránh lỗi nếu quên chưa thêm container vào HTML
 
-  // Tạo thẻ thông báo
   const toast = document.createElement('div')
 
-  // Cấu hình màu sắc icon dựa trên type
   const isSuccess = type === 'success'
-  const bgColor = isSuccess ? 'bg-green-500' : 'bg-red-500'
+  // Màu xanh lá chuẩn Tailwind (bg-green-500) và bo góc (rounded-lg)
+  const bgColor = isSuccess ? 'bg-[#2ecc71]' : 'bg-[#e74c3c]'
   const icon = isSuccess ? '<i class="fas fa-check-circle"></i>' : '<i class="fas fa-exclamation-circle"></i>'
 
-  // Style Tailwind cho thông báo (Slide từ phải sang)
-  toast.className = `${bgColor} text-white px-6 py-3 rounded shadow-lg flex items-center gap-3 transform transition-all duration-300 translate-x-full opacity-0`
+  // Thêm độ bóng và khoảng cách
+  toast.className = `min-w-[250px] ${bgColor} text-white px-6 py-4 rounded-lg shadow-2xl flex items-center gap-3 transform transition-all duration-500 translate-x-full opacity-0`
+
   toast.innerHTML = `
       <div class="text-xl">${icon}</div>
-      <div class="font-medium text-sm">${message}</div>
+      <div class="font-bold text-sm">${message}</div>
   `
 
-  // Thêm vào màn hình
   container.appendChild(toast)
 
-  // Hiệu ứng hiện ra (sau 10ms để trình duyệt kịp render)
+  // Hiệu ứng trượt vào
   setTimeout(() => {
     toast.classList.remove('translate-x-full', 'opacity-0')
   }, 10)
 
-  // Tự động biến mất sau 3 giây
+  // Tự động biến mất
   setTimeout(() => {
     toast.classList.add('translate-x-full', 'opacity-0')
-    // Xóa khỏi DOM sau khi animation kết thúc
     setTimeout(() => {
       toast.remove()
-    }, 300)
+    }, 500)
   }, 3000)
 }
 // Chạy hàm khi trang tải xong

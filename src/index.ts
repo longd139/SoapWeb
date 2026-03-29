@@ -7,6 +7,7 @@ import dotenv from 'dotenv'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
 import adminRoute from './routes/admin.routes'
 import productsRouter from './routes/products.routes'
+import cartRoutes from './routes/cart.routes'
 const app = express()
 const PORT = process.env.PORT || 3000
 
@@ -31,6 +32,8 @@ app.use(defaultErrorHandler)
 
 // 1. Route chỉ dành cho ADMIN (Role 0)
 app.use('/admin', adminRoute)
+
+app.use('/cart', cartRoutes)
 
 app.use('/products', productsRouter)
 

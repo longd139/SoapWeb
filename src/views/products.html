@@ -12,6 +12,11 @@
       rel="stylesheet"
     />
 
+    <link
+      rel="stylesheet"
+      href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css)"
+    />
+
     <script>
       tailwind.config = {
         theme: {
@@ -33,6 +38,7 @@
     </script>
   </head>
   <body class="bg-wood-50 text-wood-800 antialiased">
+    <div id="toast-container" class="fixed top-5 right-5 z-[9999] flex flex-col gap-3"></div>
     <nav class="container mx-auto px-6 py-8 relative border-wood-800/10">
       <div class="flex justify-between items-center h-10">
         <div class="md:hidden cursor-pointer text-wood-800 hover:text-wood-500 transition">
@@ -72,13 +78,16 @@
               <span class="hidden md:inline text-md font-medium ml-1">Đăng Nhập</span>
             </a>
 
-            <a href="#" class="text-lg hover:text-wood-500 relative"
-              ><i class="fas fa-shopping-bag"></i
-              ><span
-                class="absolute -top-1 -right-2 bg-wood-500 text-white text-[10px] w-4 h-4 rounded-full flex items-center justify-center font-bold"
-                >1</span
-              ></a
-            >
+            <a href="/cart" class="text-lg hover:text-wood-500 relative inline-block">
+              <i class="fas fa-shopping-bag"></i>
+              <!-- Badge hiển thị số lượng sản phẩm -->
+              <span
+                id="cart-count"
+                class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+              >
+                0
+              </span>
+            </a>
           </div>
         </div>
       </div>
@@ -418,6 +427,7 @@
         </div>
       </div>
     </div>
+
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="/js/products.js"></script>
     <script src="/js/auth.js"></script>

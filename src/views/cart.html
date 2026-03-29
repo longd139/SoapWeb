@@ -1,0 +1,174 @@
+<!doctype html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Emee Care - Giỏ hàng</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              wood: {
+                500: '#855E42',
+                800: '#4A3B32',
+                50: '#FDFBF7'
+              }
+            }
+          }
+        }
+      }
+    </script>
+  </head>
+  <body class="p-4 md:p-10 bg-[#f7f7f7]">
+    <div
+      class="max-w-7xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden grid grid-cols-1 lg:grid-cols-[2fr,1fr]"
+    >
+      <!-- CỘT BÊN TRÁI: DANH SÁCH SẢN PHẨM -->
+      <div class="bg-wood-50 p-6 md:p-10 border-b lg:border-b-0 lg:border-r border-wood-800/10">
+        <div class="flex justify-between items-center mb-10 pb-4 border-b border-wood-800/10">
+          <h1 class="text-3xl font-bold text-wood-800">Giỏ hàng</h1>
+          <!-- ID: cart-count-header để cập nhật số lượng chữ -->
+          <span id="cart-count-header" class="text-sm font-medium text-wood-800/60">0 Sản phẩm</span>
+        </div>
+
+        <!-- ID: cart-items-container - NƠI RENDER SẢN PHẨM -->
+        <div id="cart-items-container" class="space-y-6">
+          <!-- Dữ liệu sẽ được load vào đây từ Script -->
+        </div>
+
+        <a
+          href="/products"
+          class="inline-flex items-center gap-2 mt-12 text-sm font-bold text-wood-800 hover:text-wood-500 transition"
+        >
+          <i class="fas fa-arrow-left"></i> Quay lại cửa hàng
+        </a>
+      </div>
+
+      <!-- CỘT BÊN PHẢI: TỔNG KẾT -->
+      <div class="bg-white p-6 md:p-10 space-y-8">
+        <h2 class="text-2xl font-bold text-wood-800 mb-6 pb-4 border-b border-wood-800/10">Tóm tắt đơn hàng</h2>
+
+        <div class="space-y-4">
+          <div class="flex justify-between items-center text-sm font-medium">
+            <span class="text-wood-800/70">Tạm tính</span>
+            <!-- ID: subtotal-price (tùy chọn thêm) -->
+            <span id="subtotal-price" class="text-wood-800 font-bold text-base">0₫</span>
+          </div>
+
+          <div class="space-y-2">
+            <label class="text-sm font-bold uppercase tracking-wider text-wood-800/60">Giao hàng</label>
+            <div class="relative">
+              <select
+                class="w-full p-4 border border-wood-800/10 rounded-lg text-sm font-medium text-wood-800 bg-wood-50 focus:border-wood-500 focus:ring-wood-500 appearance-none cursor-pointer"
+              >
+                <option>Giao hàng tiêu chuẩn - Miễn phí</option>
+              </select>
+              <i
+                class="fas fa-chevron-down absolute right-4 top-1/2 -translate-y-1/2 text-wood-800/40 pointer-events-none"
+              ></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="flex justify-between items-center pt-6 border-t border-wood-800/10 mt-6">
+          <span class="text-lg font-bold text-wood-800">Tổng cộng</span>
+          <!-- ID: total-price ĐỂ CẬP NHẬT TỔNG TIỀN -->
+          <span id="total-price" class="text-2xl font-bold text-wood-500">0₫</span>
+        </div>
+
+        <button
+          class="w-full bg-wood-800 text-white py-5 rounded-xl font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-wood-500 transition duration-300 transform hover:-translate-y-1"
+        >
+          Thanh toán
+        </button>
+      </div>
+    </div>
+
+    <script>
+      function loadCartData() {
+        // Lấy dữ liệu từ sessionStorage
+        const cart = JSON.parse(sessionStorage.getItem('cart')) || []
+        const container = document.getElementById('cart-items-container')
+        const totalElement = document.getElementById('total-price')
+        const subtotalElement = document.getElementById('subtotal-price')
+        const countElement = document.getElementById('cart-count-header')
+
+        if (cart.length === 0) {
+          container.innerHTML = `
+            <div class="text-center py-20">
+              <p class="text-wood-800/50 italic">Giỏ hàng của bạn đang trống</p>
+              <a href="/products" class="text-wood-500 underline mt-4 inline-block">Tiếp tục mua sắm</a>
+            </div>`
+          totalElement.innerText = '0₫'
+          if (subtotalElement) subtotalElement.innerText = '0₫'
+          countElement.innerText = '0 Sản phẩm'
+          return
+        }
+
+        let total = 0
+        const html = cart
+          .map((item, index) => {
+            total += item.price * item.quantity
+            const formattedItemPrice = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(
+              item.price * item.quantity
+            )
+
+            return `
+            <div class="grid grid-cols-1 md:grid-cols-[3fr,1fr,1fr,auto] gap-4 items-center bg-white p-4 rounded-lg shadow-sm border border-wood-800/5 transition hover:border-wood-500/20">
+              <div class="flex items-center gap-4">
+                <img src="${item.image}" class="w-20 h-20 rounded-md object-cover" onerror="this.src='https://via.placeholder.com/80'">
+                <div>
+                  <h3 class="font-bold text-wood-800 text-lg line-clamp-1">${item.name}</h3>
+                  <p class="text-xs text-wood-800/60">${new Intl.NumberFormat('vi-VN').format(item.price)}₫ / cái</p>
+                </div>
+              </div>
+              <div class="flex justify-center items-center gap-3 border border-wood-800/10 rounded-full p-1 w-32 mx-auto md:w-auto">
+                <button onclick="changeQty(${index}, -1)" class="w-8 h-8 rounded-full hover:bg-wood-500 hover:text-white transition">-</button>
+                <span class="font-bold text-wood-800">${item.quantity}</span>
+                <button onclick="changeQty(${index}, 1)" class="w-8 h-8 rounded-full hover:bg-wood-500 hover:text-white transition">+</button>
+              </div>
+              <div class="text-right font-bold text-wood-800 text-lg">${formattedItemPrice}</div>
+              <div class="text-right md:text-center">
+                <button onclick="removeItem(${index})" class="text-wood-800/40 hover:text-red-500 transition px-2">
+                  <i class="fas fa-times text-xl"></i>
+                </button>
+              </div>
+            </div>`
+          })
+          .join('')
+
+        container.innerHTML = html
+        const finalTotal = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(total)
+        totalElement.innerText = finalTotal
+        if (subtotalElement) subtotalElement.innerText = finalTotal
+        countElement.innerText = `${cart.length} Sản phẩm`
+      }
+
+      function changeQty(index, delta) {
+        let cart = JSON.parse(sessionStorage.getItem('cart'))
+        cart[index].quantity += delta
+        if (cart[index].quantity < 1) cart[index].quantity = 1
+        sessionStorage.setItem('cart', JSON.stringify(cart))
+        loadCartData()
+      }
+
+      function removeItem(index) {
+        if (confirm('Bạn có chắc muốn xóa sản phẩm này?')) {
+          let cart = JSON.parse(sessionStorage.getItem('cart'))
+          cart.splice(index, 1)
+          sessionStorage.setItem('cart', JSON.stringify(cart))
+          loadCartData()
+          updateCartBadge() // Thông báo khi xóa thành công
+          showToast(`Đã xóa "${itemName}" khỏi giỏ hàng`, 'success')
+        }
+      }
+
+      document.addEventListener('DOMContentLoaded', loadCartData)
+    </script>
+  </body>
+</html>

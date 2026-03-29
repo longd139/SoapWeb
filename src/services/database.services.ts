@@ -3,6 +3,7 @@ import dotenv from 'dotenv'
 import User from '~/models/User.schema'
 import RefreshToken from '~/models/RefreshToken.schema'
 import Product from '~/models/Product.schema'
+import CartItem from '~/models/Cart.schema'
 dotenv.config() // kết nối đến file .env
 
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@websoapcluster.lizuuzv.mongodb.net/?appName=webSoapCluster`
@@ -36,6 +37,10 @@ class DatabaseServices {
   }
   get products(): Collection<Product> {
     return this.db.collection(process.env.DB_PRODUCTS_COLLECTION as string) // có khả năng bị undefind nên cho nó biết nó là string
+  }
+  // Trong class DatabaseServices
+  get carts(): Collection<CartItem> {
+    return this.db.collection(process.env.DB_CARTS_COLLECTION as string)
   }
 }
 //tạo instance ở đây và export instance đó
