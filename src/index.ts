@@ -13,8 +13,9 @@ const app = express()
 const PORT = process.env.PORT || 3000
 
 // CONNECT DB
-databaseServices.connect()
 dotenv.config()
+// databaseServices.connect()
+
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cookieParser()) //
@@ -26,7 +27,6 @@ app.use(cookieParser()) //
 //   // hàm này có nhiệm vụ đọc 1 file HTML, pdf ...
 // })
 // --- ĐƯA LÊN ĐẦU ---
-app.use(express.static(path.join(__dirname, '../public')))
 
 // app.get('/', (req, res) => {
 //   const homePath = path.resolve(__dirname, 'views', 'home.html')
@@ -35,7 +35,7 @@ app.use(express.static(path.join(__dirname, '../public')))
 app.get('/', (req, res) => {
   res.send('<h1>TEST TRANG CHU</h1>')
 })
-
+app.use(express.static(path.join(__dirname, '../public')))
 // --- CÁC ROUTER CON ĐỂ XUỐNG DƯỚI ---
 // app.use('/user', usersRoutes)
 // app.use('/admin', adminRoute)
