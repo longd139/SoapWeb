@@ -26,18 +26,12 @@ app.use(express.json())
 //   // hàm này có nhiệm vụ đọc 1 file HTML, pdf ...
 // })
 app.use(express.static(path.join(process.cwd(), 'public')))
+// 2. Route cho trang chủ
 app.get('/', (req, res) => {
-  // process.cwd() trỏ thẳng vào thư mục gốc dự án (EmeeCare_Web)
-  // Sau đó đi vào src/views/home.html
-  const url_home = path.join(process.cwd(), 'src', 'views', 'home.html')
-
-  res.sendFile(url_home, (err) => {
-    if (err) {
-      console.error('Lỗi không tìm thấy file home.html:', err)
-      res.status(404).send('Server không tìm thấy file giao diện trang chủ.')
-    }
-  })
+  const homePath = path.join(process.cwd(), 'src', 'views', 'home.html')
+  res.sendFile(homePath)
 })
+
 app.use('/user', usersRoutes)
 // error handler
 app.use(defaultErrorHandler)
