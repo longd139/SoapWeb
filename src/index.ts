@@ -19,7 +19,6 @@ app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
 app.use(cookieParser()) //
 
-app.use(express.json())
 // app.use(express.static(path.join(__dirname, '../public')))
 // app.get('/', (req, res) => {
 //   const url_home = path.join(__dirname, 'views/home.html') // viết đúng là phải có dòng này
@@ -29,9 +28,12 @@ app.use(express.json())
 // --- ĐƯA LÊN ĐẦU ---
 app.use(express.static(path.join(__dirname, '../public')))
 
+// app.get('/', (req, res) => {
+//   const homePath = path.resolve(__dirname, 'views', 'home.html')
+//   res.sendFile(homePath)
+// })
 app.get('/', (req, res) => {
-  const homePath = path.resolve(__dirname, 'views', 'home.html')
-  res.sendFile(homePath)
+  res.send('<h1>Nếu thấy dòng này thì Route chạy đúng, lỗi nằm ở sendFile!</h1>')
 })
 
 // --- CÁC ROUTER CON ĐỂ XUỐNG DƯỚI ---
