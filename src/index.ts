@@ -28,13 +28,11 @@ app.use(cookieParser()) //
 // })
 // --- ĐƯA LÊN ĐẦU ---
 
-// app.get('/', (req, res) => {
-//   const homePath = path.resolve(__dirname, 'views', 'home.html')
-//   res.sendFile(homePath)
-// })
 app.get('/', (req, res) => {
-  res.send('<h1>TEST TRANG CHU</h1>')
+  const homePath = path.resolve(__dirname, 'views', 'home.html')
+  res.sendFile(homePath)
 })
+
 app.use(express.static(path.join(__dirname, '../public')))
 // --- CÁC ROUTER CON ĐỂ XUỐNG DƯỚI ---
 // app.use('/user', usersRoutes)
