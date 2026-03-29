@@ -8,7 +8,7 @@ import { defaultErrorHandler } from './middlewares/error.middlewares'
 import adminRoute from './routes/admin.routes'
 import productsRouter from './routes/products.routes'
 const app = express()
-const PORT = 3000
+const PORT = process.env.PORT || 3000
 
 // CONNECT DB
 databaseServices.connect()
