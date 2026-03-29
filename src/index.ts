@@ -25,14 +25,12 @@ app.use(express.json())
 //   res.sendFile(url_home)
 //   // hàm này có nhiệm vụ đọc 1 file HTML, pdf ...
 // })
-app.use(express.static(path.join(process.cwd(), 'public')))
+app.use(express.static(path.join(__dirname, '../public')))
 // 2. Route cho trang chủ
 app.get('/', (req, res) => {
   const homePath = path.join(__dirname, 'views', 'home.html')
 
-  // Dòng này sẽ hiện trong Logs của Render
-  console.log('Đang cố gắng mở file tại: ', homePath)
-  console.log('Thư mục hiện tại (CWD): ', process.cwd())
+  console.log('👉 Đang mở file tại:', homePath)
 
   res.sendFile(homePath, (err) => {
     if (err) {

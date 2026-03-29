@@ -21,7 +21,8 @@ const productsRouter = Router()
 productsRouter.get('/', (req, res) => {
   // Trỏ đúng đến file html sản phẩm của bạn
   // Lưu ý: Sửa đường dẫn '../views/products.html' tùy theo cấu trúc thư mục của bạn
-  const htmlPath = path.join(__dirname, '../views/products.html')
+  // const htmlPath = path.join(__dirname, '../views/products.html')
+  const htmlPath = path.resolve(process.cwd(), 'dist/views/products.html')
   return res.sendFile(htmlPath)
 })
 

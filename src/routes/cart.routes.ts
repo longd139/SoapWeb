@@ -13,7 +13,7 @@ const cartRoutes = Router()
  */
 cartRoutes.get('/', (req, res) => {
   // Lấy đường dẫn tuyệt đối đến file cart.html trong thư mục views
-  const htmlPath = path.join(process.cwd(), 'src', 'views', 'cart.html')
+  const htmlPath = path.join(__dirname, 'views', 'cart.html')
 
   return res.sendFile(htmlPath)
 })
