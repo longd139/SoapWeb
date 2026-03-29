@@ -33,14 +33,14 @@ app.use(express.static(path.join(__dirname, '../public')))
 //   res.sendFile(homePath)
 // })
 app.get('/', (req, res) => {
-  res.send('<h1>Nếu thấy dòng này thì Route chạy đúng, lỗi nằm ở sendFile!</h1>')
+  res.send('<h1>TEST TRANG CHU</h1>')
 })
 
 // --- CÁC ROUTER CON ĐỂ XUỐNG DƯỚI ---
-app.use('/user', usersRoutes)
-app.use('/admin', adminRoute)
-app.use('/cart', cartRoutes)
-app.use('/products', productsRouter)
+// app.use('/user', usersRoutes)
+// app.use('/admin', adminRoute)
+// app.use('/cart', cartRoutes)
+// app.use('/products', productsRouter)
 
 // --- ERROR HANDLER LUÔN Ở CUỐI CÙNG ---
 app.use(defaultErrorHandler)
