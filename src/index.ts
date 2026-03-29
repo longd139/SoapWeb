@@ -29,7 +29,17 @@ app.use(express.static(path.join(process.cwd(), 'public')))
 // 2. Route cho trang chủ
 app.get('/', (req, res) => {
   const homePath = path.join(process.cwd(), 'src', 'views', 'home.html')
-  res.sendFile(homePath)
+
+  // Dòng này sẽ hiện trong Logs của Render
+  console.log('Đang cố gắng mở file tại: ', homePath)
+  console.log('Thư mục hiện tại (CWD): ', process.cwd())
+
+  res.sendFile(homePath, (err) => {
+    if (err) {
+      console.log('LỖI SEND FILE: ', err.message)
+      res.status(404).send('Không tìm thấy file giao diện.')
+    }
+  })
 })
 
 app.use('/user', usersRoutes)
