@@ -26,40 +26,22 @@ app.use(express.json())
 //   res.sendFile(url_home)
 //   // hàm này có nhiệm vụ đọc 1 file HTML, pdf ...
 // })
+// --- ĐƯA LÊN ĐẦU ---
 app.use(express.static(path.join(__dirname, '../public')))
-// 2. Route cho trang chủ
+
 app.get('/', (req, res) => {
-  const homePath = path.join(__dirname, 'views', 'home.html')
-
-  // Đoạn code debug:
-  console.log('--- DEBUG RENDER FILES ---')
-  console.log('Thư mục hiện tại (__dirname):', __dirname)
-  if (fs.existsSync(__dirname)) {
-    console.log('Danh sách trong dist:', fs.readdirSync(__dirname))
-  }
-  const viewsDir = path.join(__dirname, 'views')
-  if (fs.existsSync(viewsDir)) {
-    console.log('Danh sách trong dist/views:', fs.readdirSync(viewsDir))
-  } else {
-    console.log('❌ Thư mục dist/views KHÔNG TỒN TẠI!')
-  }
-  console.log('--------------------------')
-
-  res.sendFile(homePath, (err) => {
-    if (err) res.status(404).send(`Không tìm thấy file tại: ${homePath}`)
-  })
+  const homePath = path.resolve(__dirname, 'views', 'home.html')
+  res.sendFile(homePath)
 })
 
+// --- CÁC ROUTER CON ĐỂ XUỐNG DƯỚI ---
 app.use('/user', usersRoutes)
-// error handler
-app.use(defaultErrorHandler)
-
-// 1. Route chỉ dành cho ADMIN (Role 0)
 app.use('/admin', adminRoute)
-
 app.use('/cart', cartRoutes)
-
 app.use('/products', productsRouter)
+
+// --- ERROR HANDLER LUÔN Ở CUỐI CÙNG ---
+app.use(defaultErrorHandler)
 
 // 2. Route dành cho STAFF và ADMIN (Role 0, 1)
 // usersRoutes.get('/staff/orders', accessTokenValidator, checkRole([USER_ROLE.Admin, USER_ROLE.Staff]), (req, res) => {
