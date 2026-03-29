@@ -8,6 +8,7 @@ import { defaultErrorHandler } from './middlewares/error.middlewares'
 import adminRoute from './routes/admin.routes'
 import productsRouter from './routes/products.routes'
 import cartRoutes from './routes/cart.routes'
+import fs from 'fs'
 const app = express()
 const PORT = process.env.PORT || 3000
 
@@ -30,13 +31,22 @@ app.use(express.static(path.join(__dirname, '../public')))
 app.get('/', (req, res) => {
   const homePath = path.join(__dirname, 'views', 'home.html')
 
-  console.log('👉 Đang mở file tại:', homePath)
+  // Đoạn code debug:
+  console.log('--- DEBUG RENDER FILES ---')
+  console.log('Thư mục hiện tại (__dirname):', __dirname)
+  if (fs.existsSync(__dirname)) {
+    console.log('Danh sách trong dist:', fs.readdirSync(__dirname))
+  }
+  const viewsDir = path.join(__dirname, 'views')
+  if (fs.existsSync(viewsDir)) {
+    console.log('Danh sách trong dist/views:', fs.readdirSync(viewsDir))
+  } else {
+    console.log('❌ Thư mục dist/views KHÔNG TỒN TẠI!')
+  }
+  console.log('--------------------------')
 
   res.sendFile(homePath, (err) => {
-    if (err) {
-      console.log('LỖI SEND FILE: ', err.message)
-      res.status(404).send('Không tìm thấy file giao diện.')
-    }
+    if (err) res.status(404).send(`Không tìm thấy file tại: ${homePath}`)
   })
 })
 
