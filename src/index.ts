@@ -28,7 +28,7 @@ app.use(express.json())
 app.use(express.static(path.join(process.cwd(), '../public')))
 // 2. Route cho trang chủ
 app.get('/', (req, res) => {
-  const homePath = path.join(process.cwd(), 'views', 'home.html')
+  const homePath = path.resolve(process.cwd(), 'src/views/home.html')
 
   // Dòng này sẽ hiện trong Logs của Render
   console.log('Đang cố gắng mở file tại: ', homePath)
