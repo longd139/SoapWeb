@@ -19,13 +19,25 @@ app.use(express.json())
 app.use(cookieParser()) //
 
 app.use(express.json())
-app.use(express.static(path.join(__dirname, '../public')))
+// app.use(express.static(path.join(__dirname, '../public')))
+// app.get('/', (req, res) => {
+//   const url_home = path.join(__dirname, 'views/home.html') // viết đúng là phải có dòng này
+//   res.sendFile(url_home)
+//   // hàm này có nhiệm vụ đọc 1 file HTML, pdf ...
+// })
+app.use(express.static(path.join(process.cwd(), 'public')))
 app.get('/', (req, res) => {
-  const url_home = path.join(__dirname, 'views/home.html') // viết đúng là phải có dòng này
-  res.sendFile(url_home)
-  // hàm này có nhiệm vụ đọc 1 file HTML, pdf ...
-})
+  // process.cwd() trỏ thẳng vào thư mục gốc dự án (EmeeCare_Web)
+  // Sau đó đi vào src/views/home.html
+  const url_home = path.join(process.cwd(), 'src', 'views', 'home.html')
 
+  res.sendFile(url_home, (err) => {
+    if (err) {
+      console.error('Lỗi không tìm thấy file home.html:', err)
+      res.status(404).send('Server không tìm thấy file giao diện trang chủ.')
+    }
+  })
+})
 app.use('/user', usersRoutes)
 // error handler
 app.use(defaultErrorHandler)
