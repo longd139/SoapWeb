@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3000
 
 // CONNECT DB
 dotenv.config()
-// databaseServices.connect()
+databaseServices.connect()
 
 app.use(express.urlencoded({ extended: true }))
 app.use(express.json())
