@@ -43,7 +43,7 @@ app.get('/', (req, res) => {
 // app.use('/products', productsRouter)
 
 // --- ERROR HANDLER LUÔN Ở CUỐI CÙNG ---
-app.use(defaultErrorHandler)
+// app.use(defaultErrorHandler)
 
 // 2. Route dành cho STAFF và ADMIN (Role 0, 1)
 // usersRoutes.get('/staff/orders', accessTokenValidator, checkRole([USER_ROLE.Admin, USER_ROLE.Staff]), (req, res) => {
