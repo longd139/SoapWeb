@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "npx nodemon",
-    "build": "rimraf ./dist && tsc && tsc-alias && mkdir -p dist/views && cp -r src/views/* dist/views/",
+    "build": "rimraf ./dist && tsc && tsc-alias && copyfiles -u 1 \"src/views/**/*\" dist",
     "start": "node dist/index.js",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
@@ -25,6 +25,7 @@
     "@types/node": "^25.2.1",
     "@typescript-eslint/eslint-plugin": "^8.54.0",
     "@typescript-eslint/parser": "^8.54.0",
+    "copyfiles": "^2.4.1",
     "cpx": "^1.5.0",
     "eslint": "^9.39.2",
     "eslint-config-prettier": "^10.1.8",

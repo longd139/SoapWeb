@@ -30,13 +30,23 @@ app.use(cookieParser()) //
 
 app.get('/', (req, res) => {
   const homePath = path.join(__dirname, 'views', 'home.html')
-  res.sendFile(homePath, (err) => {
-    if (err) {
-      // Log này sẽ cho bạn biết chính xác Render đang tìm file ở đâu
-      console.error('❌ Lỗi đường dẫn thực tế trên Render:', homePath)
-      res.status(404).send('Not Found')
-    }
-  })
+
+  // Kiểm tra xem file có thực sự tồn tại không
+  if (fs.existsSync(homePath)) {
+    res.sendFile(homePath)
+  } else {
+    // Nếu không thấy, in ra danh sách file đang có trong dist/views để debug
+    const filesInViews = fs.existsSync(path.join(__dirname, 'views'))
+      ? fs.readdirSync(path.join(__dirname, 'views'))
+      : 'Thư mục views không tồn tại!'
+
+    res.status(404).send({
+      message: 'Vẫn không thấy file HTML!',
+      path_attempted: homePath,
+      files_found: filesInViews,
+      current_dirname: __dirname
+    })
+  }
 })
 
 app.use(express.static(path.join(__dirname, '../public')))
