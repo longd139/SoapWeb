@@ -9,6 +9,7 @@ import adminRoute from './routes/admin.routes'
 import productsRouter from './routes/products.routes'
 import cartRoutes from './routes/cart.routes'
 import fs from 'fs'
+import checkoutRoutes from './routes/checkout.routes'
 const app = express()
 const PORT = Number(process.env.PORT) || 3000
 
@@ -34,6 +35,7 @@ app.use('/user', usersRoutes)
 app.use('/admin', adminRoute)
 app.use('/cart', cartRoutes)
 app.use('/products', productsRouter)
+app.use('/checkout', checkoutRoutes)
 
 // --- ERROR HANDLER LUÔN Ở CUỐI CÙNG ---
 app.use(defaultErrorHandler)

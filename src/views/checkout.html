@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Thanh Toán</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            colors: {
+              wood: {
+                500: '#855E42',
+                800: '#4A3B32',
+                50: '#FDFBF7'
+              }
+            }
+          }
+        }
+      }
+    </script>
+  </head>
+  <body>
+    <div class="min-h-screen bg-wood-50 p-4 md:p-8 font-sans text-wood-800">
+      <div class="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <!-- CỘT TRÁI: THÔNG TIN KHÁCH HÀNG & THANH TOÁN -->
+        <div class="lg:col-span-2 space-y-6">
+          <!-- 1. Shipping Address -->
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-wood-500/10">
+            <h2 class="text-xl font-bold mb-6 text-wood-800 border-b border-wood-500/20 pb-2">Thông tin giao hàng</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium mb-1">Họ và tên</label>
+                <input
+                  type="text"
+                  placeholder="Nguyễn Văn A"
+                  class="w-full p-3 rounded-lg border border-wood-500/30 focus:ring-2 focus:ring-wood-500 outline-none transition"
+                />
+              </div>
+              <div class="md:col-span-2">
+                <label class="block text-sm font-medium mb-1">Địa chỉ cụ thể</label>
+                <input
+                  type="text"
+                  placeholder="Số nhà, tên đường..."
+                  class="w-full p-3 rounded-lg border border-wood-500/30 focus:ring-2 focus:ring-wood-500 outline-none"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1">Tỉnh / Thành phố</label>
+                <select
+                  class="w-full p-3 rounded-lg border border-wood-500/30 focus:ring-2 focus:ring-wood-500 outline-none"
+                >
+                  <option>Chọn tỉnh thành</option>
+                  <option>TP. Hồ Chí Minh</option>
+                  <option>Hà Nội</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium mb-1">Loại hình giao hàng</label>
+                <select
+                  id="shipping-method"
+                  class="w-full p-3 rounded-lg border border-wood-500/30 bg-white focus:ring-2 focus:ring-wood-500 outline-none"
+                >
+                  <option value="30000">Giao hàng tiêu chuẩn (3-5 ngày)</option>
+                  <option value="100000">Giao hàng nhanh (1-2 ngày)</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <!-- 2. Payment Method -->
+          <div class="bg-white p-6 rounded-xl shadow-sm border border-wood-500/10">
+            <h2 class="text-xl font-bold mb-6 text-wood-800 border-b border-wood-500/20 pb-2">
+              Phương thức thanh toán
+            </h2>
+
+            <!-- Tabs Thanh toán -->
+            <div class="grid grid-cols-3 gap-3 mb-6">
+              <label class="cursor-pointer">
+                <input type="radio" name="payment" value="bank" class="hidden peer" checked />
+                <div
+                  class="flex flex-col items-center p-4 border rounded-lg transition peer-checked:border-wood-500 peer-checked:bg-wood-50 peer-checked:text-wood-800 border-gray-200"
+                >
+                  <span class="text-2xl mb-1">🏦</span>
+                  <span class="text-xs font-bold uppercase">Chuyển khoản</span>
+                </div>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="payment" value="cod" class="hidden peer" />
+                <div
+                  class="flex flex-col items-center p-4 border rounded-lg transition peer-checked:border-wood-500 peer-checked:bg-wood-50 peer-checked:text-wood-800 border-gray-200"
+                >
+                  <span class="text-2xl mb-1">💵</span>
+                  <span class="text-xs font-bold uppercase">Tiền mặt</span>
+                </div>
+              </label>
+              <label class="cursor-pointer">
+                <input type="radio" name="payment" value="e-wallet" class="hidden peer" />
+                <div
+                  class="flex flex-col items-center p-4 border rounded-lg transition peer-checked:border-wood-500 peer-checked:bg-wood-50 peer-checked:text-wood-800 border-gray-200"
+                >
+                  <span class="text-2xl mb-1">📱</span>
+                  <span class="text-xs font-bold uppercase">Ví điện tử</span>
+                </div>
+              </label>
+            </div>
+
+            <!-- Form Chi tiết (Sẽ ẩn/hiện tùy phương thức) -->
+            <div class="p-4 bg-wood-50 rounded-lg border border-wood-500/20">
+              <p class="text-sm italic">
+                Quý khách vui lòng chuyển khoản vào số tài khoản: <strong>123456789 - Techcombank</strong>. Đơn hàng sẽ
+                được xử lý sau khi nhận tiền.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- CỘT PHẢI: TÓM TẮT ĐƠN HÀNG -->
+        <div class="lg:col-span-1">
+          <div class="bg-white p-6 rounded-xl shadow-md border-t-4 border-wood-500 sticky top-8">
+            <h2 class="text-xl font-bold mb-6 text-wood-800">Tóm tắt đơn hàng</h2>
+
+            <!-- ID: Nơi danh sách sản phẩm sẽ hiện ra -->
+            <div id="checkout-list" class="space-y-4 mb-6 max-h-[400px] overflow-y-auto">
+              <!-- Item mẫu sẽ bị xóa khi JS chạy -->
+            </div>
+
+            <div class="border-t border-wood-500/10 pt-4 space-y-2">
+              <div class="flex justify-between text-sm">
+                <span>Tạm tính</span>
+                <span id="subtotal-val" class="font-medium">0 đ</span>
+              </div>
+              <div class="flex justify-between text-sm">
+                <span>Phí vận chuyển</span>
+                <span id="shipping-val" class="font-medium">30.000 đ</span>
+              </div>
+              <div class="flex justify-between font-bold text-lg pt-4 border-t border-wood-500/20 text-wood-800">
+                <span>Tổng cộng</span>
+                <span id="total-val" class="text-wood-500">0 đ</span>
+              </div>
+            </div>
+
+            <button
+              id="btn-confirm-order"
+              class="w-full mt-6 bg-wood-500 hover:bg-wood-800 text-white font-bold py-4 rounded-lg transition-all transform hover:-translate-y-1 shadow-lg"
+            >
+              HOÀN TẤT ĐẶT HÀNG
+            </button>
+
+            <p class="text-center text-[10px] text-gray-400 mt-4 uppercase tracking-widest">
+              Đảm bảo an toàn 100% bởi Emee Care
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <script>
+      document.addEventListener('DOMContentLoaded', () => {
+        const shippingSelect = document.getElementById('shipping-method')
+        const shippingValEl = document.getElementById('shipping-val')
+        const subtotalEl = document.getElementById('subtotal-val')
+        const totalEl = document.getElementById('total-val')
+        const checkoutList = document.getElementById('checkout-list')
+
+        let currentSubtotal = 0
+
+        // Hàm cập nhật hiển thị tiền bạc
+        function updateSummary() {
+          // Lấy giá trị phí ship từ select (ép kiểu về số)
+          const shippingFee = parseInt(shippingSelect.value)
+          const total = currentSubtotal + shippingFee
+
+          // Hiển thị lên giao diện
+          shippingValEl.textContent = shippingFee.toLocaleString('vi-VN') + ' đ'
+          totalEl.textContent = total.toLocaleString('vi-VN') + ' đ'
+        }
+
+        // 1. Load sản phẩm từ session và tính tạm tính ban đầu
+        const cartData = sessionStorage.getItem('cart')
+        const cart = cartData ? JSON.parse(cartData) : []
+
+        if (cart.length > 0) {
+          checkoutList.innerHTML = cart
+            .map((item) => {
+              const price = Number(item.price) || 0
+              const quantity = Number(item.quantity) || 1
+              currentSubtotal += price * quantity
+
+              return `
+              <div class="flex gap-3">
+                <div class="w-16 h-16 bg-wood-50 rounded-md overflow-hidden flex-shrink-0 border border-wood-500/10">
+                  <img src="${item.image || 'https://via.placeholder.com/150'}" class="w-full h-full object-cover" />
+                </div>
+                <div class="flex-1">
+                  <h4 class="text-sm font-bold text-wood-800">${item.name}</h4>
+                  <p class="text-xs text-gray-500">SL: ${quantity}</p>
+                  <p class="text-sm font-bold text-wood-500">${(price * quantity).toLocaleString('vi-VN')} đ</p>
+                </div>
+              </div>`
+            })
+            .join('')
+
+          subtotalEl.textContent = currentSubtotal.toLocaleString('vi-VN') + ' đ'
+
+          // Chạy cập nhật lần đầu khi trang vừa load
+          updateSummary()
+        }
+
+        // 2. Lắng nghe sự kiện thay đổi của select ship
+        shippingSelect.addEventListener('change', () => {
+          updateSummary()
+        })
+      })
+    </script>
+  </body>
+</html>

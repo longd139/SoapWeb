@@ -82,6 +82,7 @@
         </div>
 
         <button
+          id="btn-checkout"
           class="w-full bg-wood-800 text-white py-5 rounded-xl font-bold uppercase tracking-widest text-sm shadow-lg hover:bg-wood-500 transition duration-300 transform hover:-translate-y-1"
         >
           Thanh toán
@@ -90,6 +91,40 @@
     </div>
 
     <script>
+      document.getElementById('btn-checkout').addEventListener('click', function (e) {
+        // 1. Lấy dữ liệu giỏ hàng từ localStorage (thường lưu dưới tên 'cart')
+        const cartData = sessionStorage.getItem('cart')
+
+        // 2. Chuyển đổi từ chuỗi JSON sang mảng (Array)
+        const cart = cartData ? JSON.parse(cartData) : []
+
+        // 3. Logic kiểm tra:
+        // - Nếu không có dữ liệu
+        // - Hoặc mảng rỗng []
+        if (!cart || cart.length === 0) {
+          // Ngăn chặn hành động mặc định (nếu nút nằm trong thẻ <a>)
+          e.preventDefault()
+
+          // Hiển thị thông báo thân thiện theo phong cách Emee Care
+          if (cart.length === 0) {
+            Swal.fire({
+              title: 'Giỏ hàng trống!',
+              text: 'Bạn chưa chọn sản phẩm nào để thanh toán.',
+              icon: 'warning',
+              confirmButtonColor: '#855E42', // Màu wood-500 của bạn
+              confirmButtonText: 'Quay lại mua sắm'
+            })
+            return
+          }
+          // Bạn có thể chuyển hướng họ quay lại trang sản phẩm nếu muốn
+          // window.location.href = '/products';
+          return
+        }
+
+        // 4. Nếu có hàng, tiến hành chuyển trang
+        console.log('✅ Giỏ hàng hợp lệ, đang chuyển sang thanh toán...')
+        window.location.href = '/checkout'
+      })
       function loadCartData() {
         // Lấy dữ liệu từ sessionStorage
         const cart = JSON.parse(sessionStorage.getItem('cart')) || []
@@ -170,5 +205,7 @@
 
       document.addEventListener('DOMContentLoaded', loadCartData)
     </script>
+    <!-- Nhúng thư viện SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   </body>
 </html>
