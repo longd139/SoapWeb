@@ -30,7 +30,13 @@ app.use(cookieParser()) //
 
 app.get('/', (req, res) => {
   const homePath = path.resolve(__dirname, 'views', 'home.html')
-  res.sendFile(homePath)
+  res.sendFile(homePath, (err) => {
+    if (err) {
+      // Log này sẽ cho bạn biết chính xác Render đang tìm file ở đâu
+      console.error('❌ Lỗi đường dẫn thực tế trên Render:', homePath)
+      res.status(404).send('Not Found')
+    }
+  })
 })
 
 app.use(express.static(path.join(__dirname, '../public')))
