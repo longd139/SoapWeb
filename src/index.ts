@@ -10,7 +10,7 @@ import productsRouter from './routes/products.routes'
 import cartRoutes from './routes/cart.routes'
 import fs from 'fs'
 const app = express()
-const PORT = process.env.PORT || 3000
+const PORT = Number(process.env.PORT) || 3000
 
 // CONNECT DB
 dotenv.config()
@@ -54,6 +54,6 @@ app.use(express.static(path.join(__dirname, '../public')))
 //   res.sendFile('views/staff/orders.html')
 // })
 // mo port
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
   console.log(`This project running in localhost:${PORT}`)
 })
