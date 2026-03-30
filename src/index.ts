@@ -29,24 +29,33 @@ app.use(cookieParser()) //
 // --- ĐƯA LÊN ĐẦU ---
 
 app.get('/', (req, res) => {
-  const homePath = path.join(__dirname, 'views', 'home.html')
+  const rootDir = path.resolve(__dirname) // Thư mục dist
+  const viewsDir = path.join(__dirname, 'views')
 
-  // Kiểm tra xem file có thực sự tồn tại không
-  if (fs.existsSync(homePath)) {
-    res.sendFile(homePath)
-  } else {
-    // Nếu không thấy, in ra danh sách file đang có trong dist/views để debug
-    const filesInViews = fs.existsSync(path.join(__dirname, 'views'))
-      ? fs.readdirSync(path.join(__dirname, 'views'))
-      : 'Thư mục views không tồn tại!'
+  let debugInfo = `<h1>Render File Explorer</h1>`
+  debugInfo += `<p><strong>Thư mục hiện tại (__dirname):</strong> ${__dirname}</p>`
 
-    res.status(404).send({
-      message: 'Vẫn không thấy file HTML!',
-      path_attempted: homePath,
-      files_found: filesInViews,
-      current_dirname: __dirname
+  // 1. Kiểm tra thư mục dist (rootDir)
+  if (fs.existsSync(rootDir)) {
+    debugInfo += `<h3>Danh sách trong dist:</h3><ul>`
+    fs.readdirSync(rootDir).forEach((file) => {
+      debugInfo += `<li>${file}</li>`
     })
+    debugInfo += `</ul>`
   }
+
+  // 2. Kiểm tra thư mục dist/views
+  if (fs.existsSync(viewsDir)) {
+    debugInfo += `<h3>Danh sách trong dist/views:</h3><ul>`
+    fs.readdirSync(viewsDir).forEach((file) => {
+      debugInfo += `<li>${file}</li>`
+    })
+    debugInfo += `</ul>`
+  } else {
+    debugInfo += `<h3 style="color:red">❌ Thư mục dist/views KHÔNG TỒN TẠI!</h3>`
+  }
+
+  res.send(debugInfo)
 })
 
 app.use(express.static(path.join(__dirname, '../public')))
