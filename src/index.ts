@@ -21,42 +21,12 @@ app.use(express.json())
 app.use(cookieParser()) //
 
 // app.use(express.static(path.join(__dirname, '../public')))
-// app.get('/', (req, res) => {
-//   const url_home = path.join(__dirname, 'views/home.html') // viết đúng là phải có dòng này
-//   res.sendFile(url_home)
-//   // hàm này có nhiệm vụ đọc 1 file HTML, pdf ...
-// })
-// --- ĐƯA LÊN ĐẦU ---
-
 app.get('/', (req, res) => {
-  const rootDir = path.resolve(__dirname) // Thư mục dist
-  const viewsDir = path.join(__dirname, 'views')
-
-  let debugInfo = `<h1>Render File Explorer</h1>`
-  debugInfo += `<p><strong>Thư mục hiện tại (__dirname):</strong> ${__dirname}</p>`
-
-  // 1. Kiểm tra thư mục dist (rootDir)
-  if (fs.existsSync(rootDir)) {
-    debugInfo += `<h3>Danh sách trong dist:</h3><ul>`
-    fs.readdirSync(rootDir).forEach((file) => {
-      debugInfo += `<li>${file}</li>`
-    })
-    debugInfo += `</ul>`
-  }
-
-  // 2. Kiểm tra thư mục dist/views
-  if (fs.existsSync(viewsDir)) {
-    debugInfo += `<h3>Danh sách trong dist/views:</h3><ul>`
-    fs.readdirSync(viewsDir).forEach((file) => {
-      debugInfo += `<li>${file}</li>`
-    })
-    debugInfo += `</ul>`
-  } else {
-    debugInfo += `<h3 style="color:red">❌ Thư mục dist/views KHÔNG TỒN TẠI!</h3>`
-  }
-
-  res.send(debugInfo)
+  const url_home = path.join(__dirname, 'views/home.html') // viết đúng là phải có dòng này
+  res.sendFile(url_home)
+  // hàm này có nhiệm vụ đọc 1 file HTML, pdf ...
 })
+// --- ĐƯA LÊN ĐẦU ---
 
 app.use(express.static(path.join(__dirname, '../public')))
 // --- CÁC ROUTER CON ĐỂ XUỐNG DƯỚI ---
