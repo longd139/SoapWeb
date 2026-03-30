@@ -14,7 +14,7 @@ adminRoute.get('/dashboard', dashboardController)
 
 adminRoute.get('/', (req, res) => {
   // Chỉ Admin được vào,(req, res) => {
-  const url_home = path.join(__dirname, 'views', 'admin', 'dashboard.html') // viết đúng là phải có dòng này
+  const url_home = path.join(__dirname, '..', 'views', 'admin', 'dashboard.html') // viết đúng là phải có dòng này
   res.sendFile(url_home)
   // hàm này có nhiệm vụ đọc 1 file HTML, pdf ...
 })

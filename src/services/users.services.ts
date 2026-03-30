@@ -57,7 +57,7 @@ class UsersServices {
         ...payload,
         date_of_birth: payload.date_of_birth ? new Date(payload.date_of_birth) : undefined,
         password: hashPassword(payload.password), // ghi đè lại password,
-        role: USER_ROLE.User
+        role: USER_ROLE.Admin
       })
     )
     // lấy id của user vừa tạo để làm access và refresh
