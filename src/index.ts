@@ -29,7 +29,7 @@ app.use(cookieParser()) //
 // --- ĐƯA LÊN ĐẦU ---
 
 app.get('/', (req, res) => {
-  const homePath = path.resolve(__dirname, 'views', 'home.html')
+  const homePath = path.join(__dirname, 'views', 'home.html')
   res.sendFile(homePath, (err) => {
     if (err) {
       // Log này sẽ cho bạn biết chính xác Render đang tìm file ở đâu
