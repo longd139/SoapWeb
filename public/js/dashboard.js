@@ -699,7 +699,7 @@ function handlePriceInput(input) {
   }
 }
 
-// 1. Hàm hiện/ẩn ô nhập danh mục mới
+// 1. Hàm hiện/ẩn ô nhập danh mục mới (Giữ nguyên của bạn)
 function toggleNewCategoryInput() {
   const wrapper = document.getElementById('new-category-wrapper')
   wrapper.classList.toggle('hidden')
@@ -708,59 +708,118 @@ function toggleNewCategoryInput() {
   }
 }
 
-// 2. Hàm xử lý thêm danh mục mới vào thẻ Select
-// 1. Hàm thêm danh mục mới vào Dropdown Custom
-function addNewCategory() {
+// 2. Hàm thêm danh mục mới (Đã kết nối API MongoDB)
+async function addNewCategory() {
   const input = document.getElementById('new-category-input')
-  const list = document.getElementById('options-list')
   const name = input.value.trim()
 
-  if (!name) return showToast('Vui lòng nhập tên!', 'error')
+  if (!name) return showToast('Vui lòng nhập tên danh mục!', 'error')
 
-  const value = name.toLowerCase().replace(/\s+/g, '-')
+  try {
+    // Gọi API TẠO danh mục lên Node.js
+    const response = await fetch('/products/create-categories', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ name: name })
+    })
 
-  // Kiểm tra trùng trong danh sách div
-  const exists = Array.from(list.querySelectorAll('.option-item')).some((el) => el.getAttribute('data-value') === value)
-  if (exists) return showToast('Danh mục đã tồn tại!', 'error')
+    const data = await response.json()
 
-  // Tạo phần tử div mới thay vì Option
-  const newDiv = document.createElement('div')
-  newDiv.className = 'option-item p-2 hover:bg-brown-50 cursor-pointer text-brown-800 transition rounded-md mx-1 my-0.5'
-  newDiv.setAttribute('data-value', value)
-  newDiv.innerHTML = name
-  newDiv.onclick = () => selectOption(value, name)
+    if (response.ok) {
+      showToast('Đã thêm danh mục mới vào Database', 'success')
+      input.value = ''
+      toggleNewCategoryInput()
 
-  list.appendChild(newDiv)
+      // Gọi lại hàm load danh sách để thả xuống (Dropdown) tự cập nhật
+      await loadCategoriesForDropdown()
 
-  // Tự động chọn luôn
-  selectOption(value, name)
-
-  input.value = ''
-  toggleNewCategoryInput()
-  showToast('Đã thêm danh mục mới', 'success')
+      // Tự động chọn luôn danh mục vừa tạo (lấy _id thật từ MongoDB)
+      const newId = data.result.insertedId || data.result._id
+      selectOption(newId, name)
+    } else {
+      showToast('Lỗi: ' + data.message, 'error')
+    }
+  } catch (error) {
+    console.error('Lỗi khi thêm danh mục:', error)
+    showToast('Có lỗi xảy ra khi kết nối máy chủ', 'error')
+  }
 }
 
-// 2. Hàm xóa danh mục đang được chọn
-function removeSelectedCategory() {
+// 3. Hàm xóa danh mục (Đã kết nối API)
+async function removeSelectedCategory() {
   const rawInput = document.getElementById('category-raw-value')
-  const currentValue = rawInput.value
+  const currentValue = rawInput.value // Đây chính là _id của danh mục
 
   if (!currentValue) return showToast('Vui lòng chọn danh mục để xóa!', 'error')
 
-  if (confirm('Bạn có chắc chắn muốn xóa danh mục này?')) {
-    const list = document.getElementById('options-list')
-    // Tìm div có data-value tương ứng để xóa
-    const itemToDelete = list.querySelector(`[data-value="${currentValue}"]`)
+  if (confirm('Bạn có chắc chắn muốn xóa danh mục này khỏi Database?')) {
+    try {
+      // Gọi API XÓA danh mục (LƯU Ý: Bạn cần viết API này ở Backend)
+      const response = await fetch(`/products/delete-categories/${currentValue}`, {
+        method: 'DELETE'
+      })
 
-    if (itemToDelete) {
-      itemToDelete.remove()
-      // Reset hiển thị
-      document.getElementById('selected-category').querySelector('span').innerText = 'Chọn danh mục'
-      rawInput.value = ''
-      showToast('Đã xóa danh mục', 'success')
+      if (response.ok) {
+        showToast('Đã xóa danh mục thành công', 'success')
+
+        // Reset lại giao diện hiển thị
+        document.getElementById('selected-category').querySelector('span').innerText = 'Chọn danh mục'
+        rawInput.value = ''
+
+        // Tải lại danh sách dropdown mới nhất từ DB
+        await loadCategoriesForDropdown()
+      } else {
+        const data = await response.json()
+        showToast('Lỗi: ' + (data.message || 'Không thể xóa'), 'error')
+      }
+    } catch (error) {
+      console.error('Lỗi khi xóa:', error)
+      showToast('Có lỗi xảy ra khi kết nối máy chủ', 'error')
     }
   }
 }
+
+// Hàm gọi API lấy danh mục từ DB và đổ vào dropdown
+async function loadCategoriesForDropdown() {
+  const optionsListElement = document.getElementById('options-list')
+  if (!optionsListElement) return
+
+  try {
+    // Gọi API lấy danh sách danh mục
+    const response = await fetch('/products/get-categories')
+    const data = await response.json()
+
+    // Lấy mảng danh mục từ thuộc tính 'result'
+    const categories = data.result
+
+    let htmlContent = ''
+
+    // Lặp qua từng danh mục từ Database và tạo HTML
+    categories.forEach((cat) => {
+      htmlContent += `
+        <div
+          class="option-item p-2 hover:bg-brown-50 cursor-pointer text-brown-800 transition rounded-md mx-1 my-0.5"
+          data-value="${cat._id}"
+          onclick="selectOption('${cat._id}', '${cat.name}')"
+        >
+          ${cat.name}
+        </div>
+      `
+    })
+
+    // Cập nhật lại danh sách trên màn hình
+    optionsListElement.innerHTML = htmlContent
+  } catch (error) {
+    console.error('Lỗi khi tải danh mục cho dropdown:', error)
+    optionsListElement.innerHTML = '<div class="p-2 text-red-500 text-sm">Lỗi tải dữ liệu</div>'
+  }
+}
+
+// Đừng quên gọi hàm này 1 lần khi trang web vừa load xong nhé:
+document.addEventListener('DOMContentLoaded', () => {
+  loadCategoriesForDropdown()
+})
+
 // 1. Đóng/Mở Dropdown
 function toggleDropdown() {
   const options = document.getElementById('dropdown-options')

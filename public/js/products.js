@@ -62,10 +62,18 @@ async function loadProducts() {
     searchInput.value = searchKeyword
   }
   try {
-    let apiUrl = '/products/list'
-    if (searchKeyword) {
-      apiUrl += `?search=${encodeURIComponent(searchKeyword)}`
-    }
+    let apiUrl = '/products/list-all?'
+    const urlParams = new URLSearchParams(window.location.search)
+    const searchKeyword = urlParams.get('search')
+    const maxPrice = urlParams.get('maxPrice')
+
+    // Ghép các điều kiện lọc lại với nhau
+    const params = new URLSearchParams()
+    if (searchKeyword) params.append('search', searchKeyword)
+    if (maxPrice) params.append('maxPrice', maxPrice)
+
+    // API URL hoàn chỉnh sẽ giống như: /products/list?search=caphe&maxPrice=500000
+    apiUrl += params.toString()
 
     const response = await fetch(apiUrl)
     const data = await response.json()
@@ -197,5 +205,136 @@ function updateCartBadge() {
   }
 }
 
+// Hàm tải danh mục từ Backend
+// Hàm gọi API lấy danh mục và đổ vào dropdown
+async function loadCategoriesForDropdown() {
+  const optionsListElement = document.getElementById('options-list')
+  if (!optionsListElement) return
+
+  try {
+    // Gọi API bằng đường link chính xác của bạn
+    const response = await fetch('/products/get-categories')
+    const data = await response.json()
+
+    // Lấy mảng danh mục từ thuộc tính 'result' trong controller của bạn
+    const categories = data.result
+
+    let htmlContent = ''
+
+    // Lặp qua từng danh mục từ Database và tạo thẻ div
+    categories.forEach((cat) => {
+      // cat._id là ID từ MongoDB, cat.name là tên danh mục
+      htmlContent += `
+        <div
+          class="option-item p-2 hover:bg-brown-50 cursor-pointer text-brown-800 transition rounded-md mx-1 my-0.5"
+          data-value="${cat._id}"
+          onclick="selectOption('${cat._id}', '${cat.name}')"
+        >
+          ${cat.name}
+        </div>
+      `
+    })
+
+    // Nhét tất cả vào thẻ list
+    optionsListElement.innerHTML = htmlContent
+  } catch (error) {
+    console.error('Lỗi khi tải danh mục cho dropdown:', error)
+    optionsListElement.innerHTML = '<div class="p-2 text-red-500 text-sm">Lỗi tải dữ liệu</div>'
+  }
+}
+
+// Chạy hàm này khi load trang
+document.addEventListener('DOMContentLoaded', () => {
+  loadCategoriesForDropdown()
+})
 // Chạy hàm khi trang web tải xong
 document.addEventListener('DOMContentLoaded', loadProducts)
+
+// Hàm tải danh mục từ Backend để hiển thị ở cột Filter (Trang Sản phẩm)
+async function loadCategoriesForFilter() {
+  const categoryListElement = document.getElementById('category-filter-list')
+  if (!categoryListElement) return
+
+  try {
+    // 1. Sửa lại đường link cho khớp 100% với API của bạn
+    const response = await fetch('/products/get-categories')
+    const data = await response.json()
+
+    if (response.ok) {
+      const categories = data.result
+      let htmlContent = ''
+
+      // Kiểm tra xem khách hàng có đang bấm vào danh mục nào không (trên URL)
+      const urlParams = new URLSearchParams(window.location.search)
+      const activeCategory = urlParams.get('category')
+
+      // 2. Quét qua mảng danh mục và tạo HTML
+      categories.forEach((cat) => {
+        const isActive = activeCategory === cat._id
+
+        // Đổi màu nếu danh mục đang được chọn
+        const textClass = isActive ? 'text-wood-500 font-bold' : 'text-wood-800/70 hover:text-wood-500 transition'
+
+        const badgeClass = isActive ? 'bg-wood-500 text-white' : 'bg-wood-200 text-wood-800'
+
+        // Tạm thời hiển thị số 0 nếu Backend của bạn chưa có hàm đếm số lượng sản phẩm
+        const productCount = cat.productCount || 0
+
+        htmlContent += `
+          <li>
+            <a href="/products?category=${cat._id}" class="${textClass} flex justify-between items-center">
+              ${cat.name} 
+              <span class="text-xs ${badgeClass} px-2 py-0.5 rounded-full">${productCount}</span>
+            </a>
+          </li>
+        `
+      })
+
+      // Nhét toàn bộ HTML vào danh sách
+      categoryListElement.innerHTML = htmlContent
+    } else {
+      categoryListElement.innerHTML = `<li class="text-red-500 text-xs">Lỗi: ${data.message}</li>`
+    }
+  } catch (error) {
+    console.error('Lỗi khi tải danh mục filter:', error)
+    categoryListElement.innerHTML = '<li class="text-red-500 text-xs">Không thể kết nối máy chủ.</li>'
+  }
+}
+
+// Chạy hàm này ngay khi khách hàng vừa vào trang Sản phẩm
+document.addEventListener('DOMContentLoaded', () => {
+  loadCategoriesForFilter()
+})
+
+// Hàm 1: Chạy liên tục khi bạn đang kéo thanh trượt (để số tiền nhảy theo realtime)
+function updatePriceDisplay(value) {
+  // Format lại thành tiền Việt: 500000 -> 500.000 ₫
+  const formattedPrice = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value)
+  document.getElementById('current-price-display').innerText = formattedPrice
+}
+
+// Hàm 2: Chỉ chạy khi bạn "buông chuột" ra khỏi thanh trượt -> Bắt đầu lọc
+function triggerPriceFilter(value) {
+  const url = new URL(window.location.href)
+
+  // Gắn mức giá vừa chọn lên thanh địa chỉ URL (ví dụ: ?maxPrice=500000)
+  url.searchParams.set('maxPrice', value)
+  window.history.pushState({}, '', url)
+
+  // Gọi lại hàm loadProducts() để lấy sản phẩm mới từ DB
+  loadProducts()
+}
+
+// Hàm bổ sung: Giữ nguyên mức giá trên thanh trượt khi F5 lại trang
+document.addEventListener('DOMContentLoaded', () => {
+  const priceInput = document.getElementById('price-range')
+  if (priceInput) {
+    const urlParams = new URLSearchParams(window.location.search)
+    const maxPrice = urlParams.get('maxPrice')
+
+    if (maxPrice) {
+      priceInput.value = maxPrice
+      updatePriceDisplay(maxPrice)
+    }
+  }
+})

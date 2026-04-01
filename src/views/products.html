@@ -23,10 +23,13 @@
           extend: {
             colors: {
               wood: {
-                500: '#855E42',
-                800: '#4A3B32',
-                50: '#FDFBF7',
-                200: '#E5DFD5' // Thêm màu viền nhạt
+                50: '#F9F7F3', // Lấy mã nền sáng của brand.bg
+                200: '#E6DACE', // Màu viền nhạt (mình tự pha thêm một chút dựa trên tông màu mới để viền không bị quá đậm)
+                500: '#C89B72', // Lấy mã cam đất/nâu nhạt của brand.primary làm màu chủ đạo/nút bấm
+                800: '#5C4E43', // Lấy mã chữ nâu đen của brand.dark
+
+                // Mình khai báo thêm màu footer vào đây luôn phòng khi bạn cần dùng tới
+                footer: '#8F8274'
               }
             },
             fontFamily: {
@@ -39,121 +42,117 @@
   </head>
   <body class="bg-wood-50 text-wood-800 antialiased">
     <div id="toast-container" class="fixed top-5 right-5 z-[9999] flex flex-col gap-3"></div>
-    <nav class="container mx-auto px-6 py-8 relative border-wood-800/10">
-      <div class="flex justify-between items-center h-10">
-        <div class="md:hidden cursor-pointer text-wood-800 hover:text-wood-500 transition">
-          <i class="fas fa-bars text-2xl"></i>
+    <nav class="container mx-auto px-6 py-2 relative z-20 bg-wood-50 border-b border-wood-800/10">
+      <div class="flex items-center justify-between h-20 md:h-24">
+        <div class="md:hidden flex-1 cursor-pointer text-wood-800 hover:text-wood-500 transition">
+          <i class="fas fa-bars text-xl"></i>
         </div>
-        <div class="hidden md:flex gap-8 text-sm font-medium tracking-wider text-wood-800/70">
-          <a href="/" class="hover:text-wood-500 transition">HOME</a>
-          <a href="/products" class="text-wood-500 font-bold transition">SẢN PHẨM</a>
-          <a href="#" class="hover:text-wood-500 transition">LIÊN HỆ</a>
-        </div>
-        <div class="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          <a
-            href="/"
-            class="text-2xl font-bold tracking-[0.15em] border-[3px] border-wood-800 px-8 py-2 text-wood-800 uppercase inline-block"
-            >EMEE CARE</a
-          >
-        </div>
-        <div class="hidden md:flex items-center gap-6 text-wood-800">
-          <div class="relative">
-            <input
-              id="global-search-input"
-              type="text"
-              placeholder="Tìm kiếm sản phẩm..."
-              class="w-64 bg-white border border-[#4A3B32]/20 rounded-full py-2 pl-5 pr-10 text-sm focus:outline-none focus:border-[#855E42] transition-colors text-[#4A3B32] placeholder-[#4A3B32]/50"
-              onkeypress="handleGlobalSearch(event)"
-            />
-            <button
-              onclick="executeSearch()"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A3B32]/50 hover:text-[#855E42] transition"
-            >
-              <i class="fas fa-search"></i>
-            </button>
-          </div>
-          <div class="flex gap-4 items-center">
-            <a href="javascript:void(0)" onclick="toggleAuthModal()" class="text-lg hover:text-wood-500">
-              <i class="far fa-user"></i>
-              <span class="hidden md:inline text-md font-medium ml-1">Đăng Nhập</span>
-            </a>
 
-            <a href="/cart" class="text-lg hover:text-wood-500 relative inline-block">
+        <div
+          class="hidden md:flex flex-1 justify-end items-center gap-8 pr-10 text-md font-bold tracking-[0.15em] uppercase text-wood-800/80"
+        >
+          <a href="/" class="hover:text-wood-500 transition">HOME</a>
+          <a href="/products" class="text-wood-500 transition">SẢN PHẨM</a>
+        </div>
+
+        <a href="/" class="shrink-0 flex items-center justify-center" data-aos="fade-down">
+          <img
+            src="https://res.cloudinary.com/dbv2rcl3b/image/upload/v1775027842/LOGO_FINAL_scale_k8v93t.png"
+            alt="Logo"
+            class="w-32 md:w-40 h-auto"
+          />
+        </a>
+
+        <div class="hidden md:flex flex-1 justify-between items-center pl-10">
+          <div class="flex gap-8 text-md font-bold tracking-[0.15em] uppercase text-wood-800/80">
+            <a href="#" class="hover:text-wood-500 transition">About</a>
+            <a href="#" class="hover:text-wood-500 transition">LIÊN HỆ</a>
+          </div>
+
+          <div class="flex items-center gap-5 text-wood-800 ml-auto">
+            <a href="javascript:void(0)" onclick="toggleAuthModal()" class="text-lg hover:text-wood-500 transition">
+              <i class="far fa-user"></i>
+            </a>
+            <a href="/cart" class="text-lg hover:text-wood-500 transition relative inline-block">
               <i class="fas fa-shopping-bag"></i>
-              <!-- Badge hiển thị số lượng sản phẩm -->
               <span
                 id="cart-count"
-                class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                class="absolute -top-2 -right-2 bg-wood-500 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center"
+                >0</span
               >
-                0
-              </span>
             </a>
           </div>
+        </div>
+
+        <div class="md:hidden flex-1 flex justify-end">
+          <a href="/cart" class="text-lg text-wood-800 hover:text-wood-500 transition relative inline-block">
+            <i class="fas fa-shopping-bag"></i>
+            <span
+              id="cart-count-mobile"
+              class="absolute -top-2 -right-2 bg-wood-500 text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center"
+              >0</span
+            >
+          </a>
         </div>
       </div>
     </nav>
-
     <div class="container mx-auto px-6 py-12">
       <div class="flex flex-col lg:flex-row gap-12">
         <aside class="w-full lg:w-1/4 space-y-10" data-aos="fade-right" data-aos-duration="1000">
           <div>
             <h3 class="font-bold uppercase tracking-widest text-sm mb-4 flex items-center gap-2">
-              <i class="fas fa-sliders-h"></i> Filters
+              <i class="fas fa-sliders-h"></i>Lọc sản phẩm
             </h3>
             <div class="relative">
               <input
+                id="global-search-input"
                 type="text"
-                placeholder="Search..."
-                class="w-full bg-white border border-wood-200 px-4 py-3 text-sm focus:outline-none focus:border-wood-500 transition rounded-sm"
+                placeholder="Tìm kiếm sản phẩm..."
+                class="w-full bg-white border border-wood-200 px-4 py-3 text-sm focus:outline-none focus:border-wood-500 transition rounded-sm pr-10"
+                onkeypress="handleGlobalSearch(event)"
               />
-              <i class="fas fa-search absolute right-4 top-1/2 -translate-y-1/2 text-wood-800/50"></i>
+              <button
+                onclick="executeSearch()"
+                class="absolute right-4 top-1/2 -translate-y-1/2 text-wood-800/50 hover:text-wood-500 transition focus:outline-none"
+              >
+                <i class="fas fa-search"></i>
+              </button>
             </div>
           </div>
 
           <div>
-            <h4 class="font-bold text-xs uppercase tracking-widest text-wood-800/50 mb-4">Categories</h4>
-            <ul class="space-y-3 text-sm font-medium">
-              <li>
-                <a href="#" class="text-wood-500 font-bold flex justify-between"
-                  >Xà phòng thảo mộc <span class="text-xs bg-wood-500 text-white px-2 py-0.5 rounded-full">12</span></a
-                >
-              </li>
-              <li>
-                <a href="#" class="text-wood-800/70 hover:text-wood-500 transition flex justify-between"
-                  >Nến thơm thư giãn
-                  <span class="text-xs bg-wood-200 text-wood-800 px-2 py-0.5 rounded-full">8</span></a
-                >
-              </li>
-              <li>
-                <a href="#" class="text-wood-800/70 hover:text-wood-500 transition flex justify-between"
-                  >Tinh dầu nguyên chất
-                  <span class="text-xs bg-wood-200 text-wood-800 px-2 py-0.5 rounded-full">5</span></a
-                >
-              </li>
-              <li>
-                <a href="#" class="text-wood-800/70 hover:text-wood-500 transition flex justify-between"
-                  >Bộ quà tặng Spa <span class="text-xs bg-wood-200 text-wood-800 px-2 py-0.5 rounded-full">3</span></a
-                >
+            <h4 class="font-bold text-xs uppercase tracking-widest text-wood-800/50 mb-4">Danh mục</h4>
+            <ul id="category-filter-list" class="space-y-3 text-sm font-medium">
+              <li class="text-center text-wood-800/50 text-xs py-2">
+                <i class="fas fa-spinner fa-spin mr-2"></i> Đang tải danh mục...
               </li>
             </ul>
           </div>
 
           <div>
-            <h4 class="font-bold text-xs uppercase tracking-widest text-wood-800/50 mb-4">Price Range</h4>
+            <h4 class="font-bold text-xs uppercase tracking-widest text-wood-800/50 mb-4">Mức giá</h4>
             <div class="flex items-center justify-between text-sm font-bold text-wood-800 mb-2">
-              <span>$10</span>
-              <span>$100</span>
+              <span>0 ₫</span>
+              <span id="current-price-display">500.000 ₫</span>
             </div>
-            <div class="h-1 bg-wood-200 rounded-full relative">
-              <div class="absolute left-0 w-1/2 h-full bg-wood-500 rounded-full"></div>
-              <div
-                class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-wood-500 rounded-full border-2 border-white shadow cursor-pointer hover:scale-110 transition"
-              ></div>
+            <div class="relative w-full mt-2">
+              <input
+                type="range"
+                id="price-range"
+                min="0"
+                max="1000000"
+                step="50000"
+                value="500000"
+                class="w-full h-1 bg-wood-200 rounded-lg appearance-none cursor-pointer accent-wood-500"
+                oninput="updatePriceDisplay(this.value)"
+                onchange="triggerPriceFilter(this.value)"
+              />
             </div>
+            <p class="text-[10px] text-wood-800/40 text-center mt-2">Lọc sản phẩm từ 0đ đến mức giá đã chọn</p>
           </div>
 
           <div>
-            <h4 class="font-bold text-xs uppercase tracking-widest text-wood-800/50 mb-4">Popular Tags</h4>
+            <h4 class="font-bold text-xs uppercase tracking-widest text-wood-800/50 mb-4">Từ khóa nổi bật</h4>
             <div class="flex flex-wrap gap-2">
               <span
                 class="px-3 py-1 border border-wood-200 bg-white text-xs font-medium hover:bg-wood-500 hover:text-white hover:border-wood-500 transition cursor-pointer"
@@ -254,12 +253,29 @@
       </div>
     </div>
 
-    <footer class="border-t border-wood-800/20 mt-20 bg-wood-50 pb-10">
-      <div class="container mx-auto px-6 py-10 text-center">
-        <h4 class="text-sm font-bold uppercase tracking-[0.15em] mb-4 text-wood-800">EMEE CARE</h4>
-        <p class="text-[10px] font-bold text-wood-800/40 uppercase tracking-widest">
-          © 2026 Emee Care. All rights reserved.
-        </p>
+    <footer class="bg-wood-footer text-white py-16">
+      <div class="container mx-auto px-6 text-center">
+        <a href="/" class="text-4xl font-serif mb-2 inline-block"> Emee Care </a>
+
+        <div class="mt-8 mb-8 text-sm text-white/80 space-y-2">
+          <p>62 Võ Thị Sáu, Phường Tân Định, Quận 1, TPHCM</p>
+          <p>0964 405 219 | emeecare@gmail.com</p>
+        </div>
+
+        <div class="flex justify-center gap-6 text-lg mb-12">
+          <a href="#" class="hover:text-brand-primary transition"><i class="fab fa-facebook-f"></i></a>
+          <!-- <a href="#" class="hover:text-brand-primary transition"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="hover:text-brand-primary transition"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="hover:text-brand-primary transition"><i class="fab fa-youtube"></i></a> -->
+          <a href="#" class="hover:text-brand-primary transition"><i class="fab fa-tiktok"></i></a>
+        </div>
+
+        <div
+          class="border-t border-white/20 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-white/50"
+        >
+          <p>Copyright © 2026 Emee Care.</p>
+          <p class="mt-4 md:mt-0">Dịu nhẹ cho mỗi ngày</p>
+        </div>
       </div>
     </footer>
     <div
