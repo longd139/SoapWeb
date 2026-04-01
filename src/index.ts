@@ -30,6 +30,8 @@ app.get('/', (req, res) => {
 // --- ĐƯA LÊN ĐẦU ---
 
 app.use(express.static(path.join(__dirname, '../public')))
+// app.use(express.static(path.resolve(process.cwd(), 'src/views')))
+app.use(express.static(path.resolve(process.cwd())))
 // --- CÁC ROUTER CON ĐỂ XUỐNG DƯỚI ---
 app.use('/user', usersRoutes)
 app.use('/admin', adminRoute)
