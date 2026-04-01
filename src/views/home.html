@@ -3,10 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Emee Care - Dịu Nhẹ Cho Mỗi Ngày</title>
+    <title>Emee Care - Dịu nhẹ cho mỗi ngày</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
-
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet" />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -14,7 +13,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Old+Standard+TT:ital,wght@0,400;0,700;1,400&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Oswald:wght@200..700&family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Jost:ital,wght@0,300..700;1,300..700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
       rel="stylesheet"
     />
 
@@ -23,529 +26,411 @@
         theme: {
           extend: {
             colors: {
-              wood: {
-                500: '#855E42',
-                800: '#4A3B32',
-                50: '#FDFBF7'
+              brand: {
+                bg: '#F9F7F3', // Màu nền beige sáng
+                primary: '#C89B72', // Màu cam đất/nâu nhạt của nút bấm
+                dark: '#5C4E43', // Màu chữ nâu đen
+                footer: '#8F8274' // Màu nền footer
               }
             },
             fontFamily: {
-              sans: ['Roboto', 'sans-serif'],
-              serif: ['Lora', 'serif']
+              sans: ['Jost', 'sans-serif'],
+              serif: ['Playfair Display', 'serif'],
+              signature: ['"Qwitcher Grypen"', 'cursive'], // Font cho chữ ký giả lập
+              oswald: ['Oswald', 'sans-serif'], // Thêm font Oswald
+              roboto: ['Roboto', 'sans-serif'] // Thêm font Roboto
             }
           }
         }
       }
     </script>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=Qwitcher+Grypen:wght@400;700&display=swap');
+    </style>
   </head>
-  <body class="bg-wood-50 text-wood-800 antialiased overflow-x-hidden">
-    <nav class="container mx-auto px-6 py-8 relative">
-      <div class="flex justify-between items-center h-10">
-        <div class="md:hidden cursor-pointer text-wood-800 hover:text-wood-500 transition">
-          <i class="fas fa-bars text-2xl"></i>
+  <body class="bg-brand-bg text-brand-dark antialiased overflow-x-hidden font-sans">
+    <nav class="container mx-auto px-6 py-2 relative z-20 bg-brand-bg border-b border-brand-dark/10">
+      <div class="flex items-center justify-between h-20 md:h-24">
+        <div class="md:hidden flex-1 cursor-pointer text-brand-dark hover:text-brand-primary transition">
+          <i class="fas fa-bars text-xl"></i>
         </div>
 
         <div
-          class="hidden md:flex gap-8 text-sm font-medium tracking-wider text-wood-800/70"
-          data-aos="fade-down"
-          data-aos-duration="1000"
+          class="hidden md:flex flex-1 justify-end items-center gap-8 pr-10 text-md font-bold tracking-[0.15em] uppercase text-brand-dark/80"
         >
-          <a href="/" class="hover:text-wood-500 transition">HOME</a>
-          <a href="/products" class="hover:text-wood-500 transition">SẢN PHẨM</a>
-          <a href="#" class="hover:text-wood-500 transition">LIÊN HỆ</a>
+          <a href="/" class="hover:text-brand-primary transition">HOME</a>
+          <a href="/products" class="hover:text-brand-primary transition">SẢN PHẨM</a>
+          <!-- <a href="#" class="hover:text-brand-primary transition">SUBSCRIBE</a> -->
         </div>
 
-        <div class="hidden md:block absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-          <a
-            href="/"
-            class="text-2xl font-bold tracking-[0.15em] border-[3px] border-wood-800 px-8 py-2 text-wood-800 uppercase inline-block"
-            data-aos="zoom-in"
-            data-aos-duration="1200"
-          >
-            EMEE CARE
-          </a>
-        </div>
+        <a href="/" class="shrink-0 flex items-center justify-center" data-aos="fade-down">
+          <img
+            src="https://res.cloudinary.com/dbv2rcl3b/image/upload/v1775027842/LOGO_FINAL_scale_k8v93t.png"
+            alt="Logo"
+            class="w-32 md:w-40 h-auto"
+          />
+        </a>
 
-        <div class="hidden md:flex items-center gap-6 text-wood-800" data-aos="fade-down" data-aos-duration="1000">
-          <div class="relative">
-            <input
-              id="global-search-input"
-              type="text"
-              placeholder="Tìm kiếm sản phẩm..."
-              class="w-64 bg-white border border-[#4A3B32]/20 rounded-full py-2 pl-5 pr-10 text-sm focus:outline-none focus:border-[#855E42] transition-colors text-[#4A3B32] placeholder-[#4A3B32]/50"
-              onkeypress="handleGlobalSearch(event)"
-            />
-            <button
-              onclick="executeSearch()"
-              class="absolute right-3 top-1/2 -translate-y-1/2 text-[#4A3B32]/50 hover:text-[#855E42] transition"
-            >
-              <i class="fas fa-search"></i>
-            </button>
+        <div class="hidden md:flex flex-1 justify-between items-center pl-10">
+          <div class="flex gap-8 text-md font-bold tracking-[0.15em] uppercase text-brand-dark/80">
+            <a href="#" class="hover:text-brand-primary transition">About </a>
+            <a href="#" class="hover:text-brand-primary transition">LIÊN HỆ</a>
           </div>
-          <div class="flex gap-4 items-center">
-            <a href="javascript:void(0)" onclick="toggleAuthModal()" class="text-lg hover:text-wood-500">
+
+          <div class="flex items-center gap-5 text-brand-dark ml-auto">
+            <!-- <div class="relative hidden xl:block">
+              <input
+                id="global-search-input"
+                type="text"
+                placeholder="Tìm kiếm..."
+                class="w-32 xl:w-40 bg-transparent border-b border-brand-dark/20 py-1 pl-2 pr-6 text-sm focus:outline-none focus:border-brand-primary transition-colors placeholder-brand-dark/40"
+                onkeypress="handleGlobalSearch(event)"
+              />
+              <button
+                onclick="executeSearch()"
+                class="absolute right-0 top-1/2 -translate-y-1/2 text-brand-dark/50 hover:text-brand-primary transition"
+              >
+                <i class="fas fa-search"></i>
+              </button>
+            </div> -->
+            <a
+              href="javascript:void(0)"
+              onclick="toggleAuthModal()"
+              class="text-lg hover:text-brand-primary transition"
+            >
               <i class="far fa-user"></i>
-              <span class="hidden md:inline text-md font-medium ml-1">Đăng Nhập</span>
             </a>
-            <a href="/cart" class="text-lg hover:text-wood-500 relative inline-block">
+            <a href="/cart" class="text-lg hover:text-brand-primary transition relative inline-block">
               <i class="fas fa-shopping-bag"></i>
-              <!-- Badge hiển thị số lượng sản phẩm -->
               <span
                 id="cart-count"
-                class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                class="absolute -top-2 -right-2 bg-brand-primary text-white text-[10px] font-bold rounded-full h-4 w-4 flex items-center justify-center"
+                >0</span
               >
-                0
-              </span>
             </a>
           </div>
+        </div>
+
+        <div class="md:hidden flex-1 flex justify-end">
+          <a href="/cart" class="text-lg text-brand-dark hover:text-brand-primary transition relative inline-block">
+            <i class="fas fa-shopping-bag"></i>
+          </a>
         </div>
       </div>
     </nav>
 
-    <header class="container mx-auto px-6 mt-6 mb-24">
-      <div class="flex flex-col md:flex-row items-center">
-        <div class="w-full md:w-1/2 relative pl-0 md:pl-12" data-aos="fade-right" data-aos-duration="1500">
-          <div class="hidden lg:flex flex-col gap-6 absolute -left-4 top-1/2 -translate-y-1/2 text-wood-800 text-lg">
-            <a href="#" class="hover:text-wood-500"><i class="fab fa-instagram"></i></a>
-            <a href="#" class="hover:text-wood-500"><i class="fab fa-facebook-f"></i></a>
-            <a href="#" class="hover:text-wood-500"><i class="fab fa-pinterest-p"></i></a>
-          </div>
-
-          <img
-            src="https://res.cloudinary.com/dbv2rcl3b/image/upload/v1774781547/Gemini_Generated_Image_1ka3aa1ka3aa1ka3_trpr3i.png"
-            alt="Xà phòng thảo mộc"
-            class="w-full h-[500px] object-cover shadow-sm bg-gray-200"
-          />
-        </div>
-
-        <div
-          class="w-full md:w-1/2 mt-10 md:mt-0 pl-0 md:pl-20 text-center md:text-left"
-          data-aos="fade-left"
-          data-aos-duration="1500"
-          data-aos-delay="200"
-        >
-          <h1
-            class="text-5xl md:text-6xl lg:text-5xl font-black text-wood-800 uppercase tracking-wide mb-6"
-            style="line-height: 1.3"
-          >
-            DỊU NHẸ <br />
-            CHO MỖI <br />
-            NGÀY
-          </h1>
-
-          <p class="text-sm font-medium text-wood-800/60 tracking-[0.2em] uppercase mb-10">
-            Tuyệt tác thủ công từ thiên nhiên. <br />
-            Nơi vẻ đẹp bắt nguồn từ sự thuần khiết.
-          </p>
-
+    <header class="relative w-full h-[600px] flex items-center justify-center text-center">
+      <div
+        class="absolute inset-0 bg-[url('https://res.cloudinary.com/dbv2rcl3b/image/upload/v1774781545/pexels-galina-kondratenko-362747611-14382430_uihxm8.jpg')] bg-cover bg-center bg-no-repeat"
+      ></div>
+      <div class="absolute inset-0 bg-black/40"></div>
+      <div class="relative z-10 px-6 max-w-3xl" data-aos="zoom-in" data-aos-duration="1500">
+        <h1 class="text-5xl md:text-6xl font-serif text-white mb-6 leading-tight">Emee Care <br /></h1>
+        <p class="text-white/90 text-lg md:text-xl font-light font-roboto mb-10">
+          Nơi vẻ đẹp bắt nguồn từ sự thuần khiết. Tuyệt tác thủ công từ thiên nhiên dành cho làn da của bạn.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
           <a
             href="#"
-            class="inline-block border-[2px] border-wood-800 text-wood-800 px-10 py-4 text-sm font-bold tracking-[0.15em] uppercase hover:bg-wood-800 hover:text-white transition duration-300"
+            class="bg-brand-primary text-white px-8 py-3 text-sm font-bold tracking-widest uppercase hover:bg-white hover:text-brand-primary transition duration-300"
           >
-            Mua Ngay
+            MUA NGAY
+          </a>
+          <a
+            href="#"
+            class="bg-transparent border border-white text-white px-8 py-3 text-sm font-bold tracking-widest uppercase hover:bg-white hover:text-brand-dark transition duration-300"
+          >
+            XEM THÊM
           </a>
         </div>
       </div>
     </header>
 
-    <section class="container mx-auto px-6 py-20">
-      <div class="text-center mb-16" data-aos="fade-up" data-aos-duration="1000">
-        <h2 class="text-3xl md:text-4xl font-bold uppercase tracking-[0.2em] text-wood-500/80">Our Favorites</h2>
-      </div>
+    <section class="container mx-auto px-6 py-24 text-center">
+      <h2 class="text-3xl font-serif text-brand-dark mb-4" data-aos="fade-up">Trải nghiệm hương thơm</h2>
+      <p class="font-bold font-roboto text-sm tracking-wide mb-6" data-aos="fade-up" data-aos-delay="100">
+        Việc miêu tả một mùi hương chưa bao giờ là điều đơn giản.
+      </p>
+      <p
+        class="max-w-3xl mx-auto font-roboto text-brand-dark/70 leading-relaxed mb-16"
+        data-aos="fade-up"
+        data-aos-delay="200"
+      >
+        Chúng tôi lựa chọn những nguyên liệu tự nhiên tinh túy nhất để tạo ra những mùi hương khó quên. Không chỉ là làm
+        sạch, mỗi bánh xà phòng là một liệu pháp thư giãn, đưa bạn trở về với sự yên bình của thiên nhiên.
+      </p>
 
-      <div class="grid grid-cols-1 md:grid-cols-2">
-        <div
-          class="flex flex-col justify-center items-center p-12 md:p-16 order-1"
-          data-aos="fade-up"
-          data-aos-duration="1000"
-        >
-          <div class="w-full max-w-md text-right">
-            <h3 class="text-2xl font-bold uppercase tracking-widest text-wood-800 mb-4">
-              Probiotic <br />
-              Cleansing Bars
-            </h3>
-
-            <p class="text-wood-800/70 mb-8 leading-relaxed text-xl ml-auto">
-              Sản phẩm làm sạch sâu với lợi khuẩn, giúp cân bằng hệ vi sinh trên da và mang lại cảm giác mềm mại tự
-              nhiên.
-            </p>
-
-            <a
-              href="#"
-              class="inline-block border-[2px] border-wood-800 px-8 py-3 text-sm font-bold uppercase tracking-[0.15em] text-wood-800 hover:bg-wood-800 hover:text-white transition duration-300"
-            >
-              Mua ngay
-            </a>
-          </div>
-        </div>
-
-        <div
-          class="h-[400px] md:h-auto order-2 relative group overflow-hidden"
-          data-aos="fade-up"
-          data-aos-duration="1000"
-          data-aos-delay="100"
-        >
-          <img
-            src="https://res.cloudinary.com/dbv2rcl3b/image/upload/v1774781545/pexels-galina-kondratenko-362747611-14382430_uihxm8.jpg"
-            alt="Soap Cutting"
-            class="w-full h-full object-cover transition duration-700 group-hover:scale-110"
-          />
-        </div>
-
-        <div
-          class="h-[400px] md:h-auto order-3 relative group overflow-hidden"
-          data-aos="fade-up"
-          data-aos-duration="1000"
-        >
-          <img
-            src="https://res.cloudinary.com/dbv2rcl3b/image/upload/v1774781643/Gemini_Generated_Image_3qa1xd3qa1xd3qa1_qyaaaw.png"
-            alt="Scented Candles"
-            class="w-full h-full object-cover transition duration-700 group-hover:scale-110"
-          />
-        </div>
-
-        <div
-          class="flex flex-col justify-center items-center p-12 md:p-16 order-4"
-          data-aos="fade-up"
-          data-aos-duration="1000"
-          data-aos-delay="100"
-        >
-          <div class="w-full max-w-md text-left">
-            <h3 class="text-2xl font-bold uppercase tracking-widest text-wood-800 mb-4">
-              Nature's Essence <br />
-              Scented Candles
-            </h3>
-            <p class="text-wood-800/70 mb-8 max-w-md leading-relaxed text-xl">
-              Nến thơm tinh dầu thiên nhiên, không khói đen, an toàn cho sức khỏe và giúp thư giãn tinh thần tuyệt đối.
-            </p>
-            <a
-              href="#"
-              class="inline-block border-[2px] border-wood-800 px-8 py-3 text-sm font-bold uppercase tracking-[0.15em] text-wood-800 hover:bg-wood-800 hover:text-white transition duration-300"
-            >
-              Mua ngay
-            </a>
-          </div>
-        </div>
-      </div>
-    </section>
-    <section class="container mx-auto px-6 py-24">
-      <div class="text-center max-w-3xl mx-auto mb-16" data-aos="fade-up" data-aos-duration="1000">
-        <h2 class="text-3xl md:text-4xl font-bold uppercase tracking-[0.2em] text-wood-500/80 mb-6">
-          Vẻ Đẹp <br class="md:hidden" />
-          Tự Nhiên
-        </h2>
-        <p class="text-wood-800/70 text-base md:text-lg leading-relaxed">
-          Không cầu kỳ, không phô trương. Chúng tôi chọn lọc những gì tinh túy nhất từ thiên nhiên để mang đến sự chăm
-          sóc dịu nhẹ, an toàn và đánh thức mọi giác quan của bạn.
-        </p>
-      </div>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-        <div class="relative pl-6 pt-6" data-aos="fade-right" data-aos-duration="1200">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-8 max-w-4xl mx-auto">
+        <div class="flex flex-col items-center" data-aos="fade-up" data-aos-delay="100">
           <div
-            class="absolute top-0 left-0 w-full h-full border-[2px] border-wood-500/30 -z-10 translate-x-[-10px] translate-y-[-10px]"
-          ></div>
-
-          <img
-            src="https://res.cloudinary.com/dbv2rcl3b/image/upload/v1774785876/Gemini_Generated_Image_1girva1girva1gir_hyow7a.png"
-            alt="Tay cầm cành lá"
-            class="w-full h-[400px] object-cover shadow-lg"
-          />
-        </div>
-
-        <div
-          class="text-center md:text-left pl-0 md:pl-10"
-          data-aos="fade-left"
-          data-aos-duration="1200"
-          data-aos-delay="200"
-        >
-          <div class="text-wood-500 text-4xl mb-6 opacity-50"><i class="fas fa-quote-left"></i></div>
-
-          <p class="text-xl md:text-2xl font-serif italic text-wood-800 leading-relaxed mb-8">
-            "Mình cực kỳ thích mùi hương của nến thơm ở đây. Nó không nồng gắt mà rất dễ chịu, cảm giác như đang lạc vào
-            một khu rừng yên tĩnh vậy."
-          </p>
-
-          <p class="text-xs font-bold tracking-[0.2em] text-wood-500 uppercase mb-10">— Lan Chi, Hà Nội</p>
-
-          <a
-            href="#"
-            class="inline-block border-[2px] border-wood-800 px-10 py-4 text-xs font-bold uppercase tracking-[0.15em] text-wood-800 hover:bg-wood-800 hover:text-white transition duration-300"
+            class="w-16 h-16 rounded-full border border-brand-primary flex items-center justify-center text-brand-primary text-2xl mb-4"
           >
-            Tìm Hiểu Thêm
-          </a>
+            <i class="fas fa-leaf"></i>
+          </div>
+          <h3 class="font-bold text-sm tracking-wide uppercase">Nguyên liệu<br />Tự nhiên</h3>
+        </div>
+        <div class="flex flex-col items-center" data-aos="fade-up" data-aos-delay="200">
+          <div
+            class="w-16 h-16 rounded-full border border-brand-primary flex items-center justify-center text-brand-primary text-2xl mb-4"
+          >
+            <i class="fas fa-globe-americas"></i>
+          </div>
+          <h3 class="font-bold text-sm tracking-wide uppercase">Thân thiện với<br />Môi trường</h3>
+        </div>
+        <div class="flex flex-col items-center" data-aos="fade-up" data-aos-delay="300">
+          <div
+            class="w-16 h-16 rounded-full border border-brand-primary flex items-center justify-center text-brand-primary text-2xl mb-4"
+          >
+            <i class="fas fa-hand-holding-heart"></i>
+          </div>
+          <h3 class="font-bold text-sm tracking-wide uppercase">Làm thủ công<br />Tận tâm</h3>
+        </div>
+        <div class="flex flex-col items-center" data-aos="fade-up" data-aos-delay="400">
+          <div
+            class="w-16 h-16 rounded-full border border-brand-primary flex items-center justify-center text-brand-primary text-2xl mb-4"
+          >
+            <i class="fas fa-home"></i>
+          </div>
+          <h3 class="font-bold text-sm tracking-wide uppercase">An toàn cho<br />Cả gia đình</h3>
+        </div>
+      </div>
+    </section>
+    <section class="container mx-auto px-6 pb-24 text-center">
+      <h2 class="text-3xl font-serif text-brand-dark mb-4" data-aos="fade-up">Những sản phẩm của chúng tôi</h2>
+      <p class="text-brand-dark/70 mb-12" data-aos="fade-up" data-aos-delay="100">
+        Khám phá các dòng sản phẩm chăm sóc toàn diện từ thiên nhiên.
+      </p>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div class="relative group" data-aos="fade-up" data-aos-delay="100">
+          <div class="h-[400px] overflow-hidden bg-gray-200">
+            <img
+              src="https://res.cloudinary.com/dbv2rcl3b/image/upload/v1774781545/pexels-ron-lach-9145340_pti3yp.jpg"
+              alt="Soap Bars"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110"
+            />
+          </div>
+          <div class="absolute bottom-6 left-1/2 -translate-x-1/2 w-3/4">
+            <a
+              href="#"
+              class="block bg-white/95 text-brand-dark py-4 text-xs font-bold uppercase tracking-widest shadow-lg hover:bg-brand-primary hover:text-white transition duration-300"
+              >SOAP BARS</a
+            >
+          </div>
+        </div>
+        <div class="relative group" data-aos="fade-up" data-aos-delay="200">
+          <div class="h-[400px] overflow-hidden bg-gray-200">
+            <img
+              src="https://res.cloudinary.com/dbv2rcl3b/image/upload/v1774781643/Gemini_Generated_Image_3qa1xd3qa1xd3qa1_qyaaaw.png"
+              alt="Hair Care"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110"
+            />
+          </div>
+          <div class="absolute bottom-6 left-1/2 -translate-x-1/2 w-3/4">
+            <a
+              href="#"
+              class="block bg-white/95 text-brand-dark py-4 text-xs font-bold uppercase tracking-widest shadow-lg hover:bg-brand-primary hover:text-white transition duration-300"
+              >HOME SCENTS</a
+            >
+          </div>
+        </div>
+        <div class="relative group" data-aos="fade-up" data-aos-delay="300">
+          <div class="h-[400px] overflow-hidden bg-gray-200">
+            <img
+              src="https://res.cloudinary.com/dbv2rcl3b/image/upload/v1774781547/Gemini_Generated_Image_1ka3aa1ka3aa1ka3_trpr3i.png"
+              alt="Bath Products"
+              class="w-full h-full object-cover transition duration-700 group-hover:scale-110"
+            />
+          </div>
+          <div class="absolute bottom-6 left-1/2 -translate-x-1/2 w-3/4">
+            <a
+              href="#"
+              class="block bg-white/95 text-brand-dark py-4 text-xs font-bold uppercase tracking-widest shadow-lg hover:bg-brand-primary hover:text-white transition duration-300"
+              >BATH PRODUCTS</a
+            >
+          </div>
         </div>
       </div>
     </section>
 
-    <section class="container mx-auto px-6 py-20">
-      <div class="text-center mb-12" data-aos="fade-up" data-aos-duration="1000">
+    <section class="bg-white py-24">
+      <div class="container mx-auto px-6 text-center">
+        <h2 class="text-3xl font-serif text-brand-dark mb-4" data-aos="fade-up">Cam kết từ Emee Care</h2>
+        <p class="font-bold font-roboto text-sm tracking-wide mb-4" data-aos="fade-up" data-aos-delay="100">
+          Cách thức hoạt động
+        </p>
+        <p class="text-brand-dark/70 mb-16" data-aos="fade-up" data-aos-delay="200">
+          Đăng ký nhận sản phẩm định kỳ với mức giá ưu đãi. Hủy bất cứ lúc nào.
+        </p>
+
+        <div class="grid font-roboto grid-cols-1 md:grid-cols-3 gap-12 max-w-5xl mx-auto mb-12">
+          <div class="flex flex-col items-center" data-aos="fade-up" data-aos-delay="100">
+            <div
+              class="w-32 h-32 bg-brand-bg rounded-full flex items-center justify-center mb-6 text-brand-primary text-5xl"
+            >
+              <i class="fas fa-box-open"></i>
+            </div>
+            <p class="text-sm text-brand-dark/70 leading-relaxed px-4">
+              Chọn sản phẩm yêu thích và tần suất giao hàng phù hợp với bạn.
+            </p>
+          </div>
+          <div class="flex flex-col items-center" data-aos="fade-up" data-aos-delay="200">
+            <div
+              class="w-32 h-32 bg-brand-bg rounded-full flex items-center justify-center mb-6 text-brand-primary text-5xl"
+            >
+              <i class="fas fa-truck"></i>
+            </div>
+            <p class="text-sm text-brand-dark/70 leading-relaxed px-4">
+              Chúng tôi đóng gói cẩn thận và giao tận cửa nhà bạn định kỳ.
+            </p>
+          </div>
+          <div class="flex flex-col items-center" data-aos="fade-up" data-aos-delay="300">
+            <div
+              class="w-32 h-32 bg-brand-bg rounded-full flex items-center justify-center mb-6 text-brand-primary text-5xl"
+            >
+              <i class="fas fa-smile-beam"></i>
+            </div>
+            <p class="text-sm text-brand-dark/70 leading-relaxed px-4">
+              Tận hưởng làn da khỏe mạnh, tiết kiệm thời gian và chi phí mua sắm.
+            </p>
+          </div>
+        </div>
+
         <a
           href="#"
-          class="text-3xl md:text-4xl font-bold uppercase tracking-[0.2em] text-wood-500/60 hover:text-wood-500 transition duration-300"
+          class="inline-block bg-brand-primary text-white px-10 py-4 text-sm font-bold tracking-widest uppercase hover:bg-brand-dark transition duration-300"
+          data-aos="zoom-in"
         >
-          #EMEECARESOAP
+          XEM THÊM
         </a>
       </div>
+    </section>
 
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div
-          class="relative group overflow-hidden aspect-square cursor-pointer"
-          data-aos="zoom-in"
-          data-aos-duration="800"
-        >
+    <section class="container mx-auto px-6 py-24">
+      <div class="flex flex-col md:flex-row items-center justify-center gap-12 max-w-5xl mx-auto">
+        <div class="w-full md:w-1/2 text-center" data-aos="fade-right">
+          <div class="text-brand-primary text-4xl mb-6"><i class="fas fa-leaf"></i></div>
+          <p class="text-lg md:text-xl font-serif text-brand-dark leading-relaxed mb-6 italic">
+            "Không cầu kỳ, không phô trương. Chúng tôi chọn lọc những gì tinh túy nhất từ thiên nhiên để mang đến sự
+            chăm sóc dịu nhẹ, an toàn và đánh thức mọi giác quan của bạn."
+          </p>
+          <div class="font-signature text-5xl text-brand-dark mb-2">Lan Chi</div>
+        </div>
+
+        <div class="w-full md:w-1/2" data-aos="fade-left">
+          <img
+            src="https://res.cloudinary.com/dbv2rcl3b/image/upload/v1774785876/Gemini_Generated_Image_1girva1girva1gir_hyow7a.png"
+            alt="Founder"
+            class="w-full max-w-md mx-auto shadow-xl rounded-sm rotate-2 hover:rotate-0 transition duration-500"
+          />
+        </div>
+      </div>
+    </section>
+
+    <section class="pt-10">
+      <div class="text-center mb-8">
+        <h3 class="text-xl font-serif text-brand-dark">
+          Facebook
+          <a href="https://www.facebook.com/profile.php?id=61586764688024" class="text-brand-primary hover:underline"
+            >@emeecare</a
+          >
+        </h3>
+      </div>
+      <div class="grid grid-cols-2 md:grid-cols-6 gap-0">
+        <div class="relative group overflow-hidden aspect-square">
           <img
             src="https://res.cloudinary.com/dbv2rcl3b/image/upload/v1774781545/pexels-galina-kondratenko-362747611-14382430_uihxm8.jpg"
             class="w-full h-full object-cover transition duration-500 group-hover:scale-110"
           />
           <div
-            class="absolute inset-0 bg-wood-800/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300"
+            class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300"
           >
-            <i class="fab fa-instagram text-white text-3xl drop-shadow-lg"></i>
+            <i class="fab fa-instagram text-white text-2xl"></i>
           </div>
         </div>
-
-        <div
-          class="relative group overflow-hidden aspect-square cursor-pointer"
-          data-aos="zoom-in"
-          data-aos-duration="800"
-          data-aos-delay="100"
-        >
+        <div class="relative group overflow-hidden aspect-square">
           <img
             src="https://res.cloudinary.com/dbv2rcl3b/image/upload/v1774781643/Gemini_Generated_Image_3qa1xd3qa1xd3qa1_qyaaaw.png"
             class="w-full h-full object-cover transition duration-500 group-hover:scale-110"
           />
           <div
-            class="absolute inset-0 bg-wood-800/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300"
+            class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300"
           >
-            <i class="fab fa-instagram text-white text-3xl drop-shadow-lg"></i>
+            <i class="fab fa-instagram text-white text-2xl"></i>
           </div>
         </div>
-
-        <div
-          class="relative group overflow-hidden aspect-square cursor-pointer"
-          data-aos="zoom-in"
-          data-aos-duration="800"
-          data-aos-delay="200"
-        >
+        <div class="relative group overflow-hidden aspect-square">
           <img
             src="https://res.cloudinary.com/dbv2rcl3b/image/upload/v1774781545/pexels-ron-lach-9145340_pti3yp.jpg"
             class="w-full h-full object-cover transition duration-500 group-hover:scale-110"
           />
           <div
-            class="absolute inset-0 bg-wood-800/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300"
+            class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300"
           >
-            <i class="fab fa-instagram text-white text-3xl drop-shadow-lg"></i>
+            <i class="fab fa-instagram text-white text-2xl"></i>
           </div>
         </div>
-
-        <div
-          class="relative group overflow-hidden aspect-square cursor-pointer"
-          data-aos="zoom-in"
-          data-aos-duration="800"
-          data-aos-delay="300"
-        >
+        <div class="relative group overflow-hidden aspect-square">
           <img
             src="https://res.cloudinary.com/dbv2rcl3b/image/upload/v1774781545/pexels-jpgata-15528965_aaqvs2.jpg"
             class="w-full h-full object-cover transition duration-500 group-hover:scale-110"
           />
           <div
-            class="absolute inset-0 bg-wood-800/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300"
+            class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300"
           >
-            <i class="fab fa-instagram text-white text-3xl drop-shadow-lg"></i>
+            <i class="fab fa-instagram text-white text-2xl"></i>
           </div>
         </div>
-
-        <div
-          class="relative group overflow-hidden aspect-square cursor-pointer"
-          data-aos="zoom-in"
-          data-aos-duration="800"
-        >
+        <div class="relative group overflow-hidden aspect-square">
           <img
             src="https://res.cloudinary.com/dbv2rcl3b/image/upload/v1774781545/pexels-vlada-karpovich-7903180_p8bfdp.jpg"
             class="w-full h-full object-cover transition duration-500 group-hover:scale-110"
           />
           <div
-            class="absolute inset-0 bg-wood-800/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300"
+            class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300"
           >
-            <i class="fab fa-instagram text-white text-3xl drop-shadow-lg"></i>
+            <i class="fab fa-instagram text-white text-2xl"></i>
           </div>
         </div>
-
-        <div
-          class="relative group overflow-hidden aspect-square cursor-pointer"
-          data-aos="zoom-in"
-          data-aos-duration="800"
-          data-aos-delay="100"
-        >
+        <div class="relative group overflow-hidden aspect-square">
           <img
             src="https://res.cloudinary.com/dbv2rcl3b/image/upload/v1774781547/Gemini_Generated_Image_1ka3aa1ka3aa1ka3_trpr3i.png"
             class="w-full h-full object-cover transition duration-500 group-hover:scale-110"
           />
           <div
-            class="absolute inset-0 bg-wood-800/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300"
+            class="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300"
           >
-            <i class="fab fa-instagram text-white text-3xl drop-shadow-lg"></i>
-          </div>
-        </div>
-
-        <div
-          class="relative group overflow-hidden aspect-square cursor-pointer"
-          data-aos="zoom-in"
-          data-aos-duration="800"
-          data-aos-delay="200"
-        >
-          <img
-            src="https://res.cloudinary.com/dbv2rcl3b/image/upload/v1774785876/Gemini_Generated_Image_1girva1girva1gir_hyow7a.png"
-            class="w-full h-full object-cover transition duration-500 group-hover:scale-110"
-          />
-          <div
-            class="absolute inset-0 bg-wood-800/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300"
-          >
-            <i class="fab fa-instagram text-white text-3xl drop-shadow-lg"></i>
-          </div>
-        </div>
-
-        <div
-          class="relative group overflow-hidden aspect-square cursor-pointer"
-          data-aos="zoom-in"
-          data-aos-duration="800"
-          data-aos-delay="300"
-        >
-          <img
-            src="https://res.cloudinary.com/dbv2rcl3b/image/upload/v1774781545/pexels-galina-kondratenko-362747611-14382430_uihxm8.jpg"
-            class="w-full h-full object-cover transition duration-500 group-hover:scale-110"
-          />
-          <div
-            class="absolute inset-0 bg-wood-800/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-300"
-          >
-            <i class="fab fa-instagram text-white text-3xl drop-shadow-lg"></i>
+            <i class="fab fa-instagram text-white text-2xl"></i>
           </div>
         </div>
       </div>
     </section>
 
-    <footer class="border-t border-wood-800/20 mt-20 bg-wood-50 pb-10">
-      <div class="container mx-auto px-6 py-16">
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
-          <div data-aos="fade-up" data-aos-duration="1000">
-            <h4 class="text-sm font-bold uppercase tracking-[0.15em] mb-6 text-wood-800">EMEE CARE</h4>
-            <ul class="space-y-4">
-              <li>
-                <a
-                  href="#"
-                  class="text-xs font-medium text-wood-800/70 hover:text-wood-500 transition uppercase tracking-wide"
-                  >Shop All</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="text-xs font-medium text-wood-800/70 hover:text-wood-500 transition uppercase tracking-wide"
-                  >For Body</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="text-xs font-medium text-wood-800/70 hover:text-wood-500 transition uppercase tracking-wide"
-                  >For Home</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="text-xs font-medium text-wood-800/70 hover:text-wood-500 transition uppercase tracking-wide"
-                  >About</a
-                >
-              </li>
-            </ul>
-          </div>
+    <footer class="bg-brand-footer text-white py-16">
+      <div class="container mx-auto px-6 text-center">
+        <a href="/" class="text-4xl font-serif mb-2 inline-block"> Emee Care </a>
 
-          <div data-aos="fade-up" data-aos-duration="1000" data-aos-delay="100">
-            <h4 class="text-sm font-bold uppercase tracking-[0.15em] mb-6 text-wood-800">Help</h4>
-            <ul class="space-y-4">
-              <li>
-                <a
-                  href="#"
-                  class="text-xs font-medium text-wood-800/70 hover:text-wood-500 transition uppercase tracking-wide"
-                  >Shipping & Returns</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="text-xs font-medium text-wood-800/70 hover:text-wood-500 transition uppercase tracking-wide"
-                  >Store Policy</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="text-xs font-medium text-wood-800/70 hover:text-wood-500 transition uppercase tracking-wide"
-                  >Payment Methods</a
-                >
-              </li>
-              <li>
-                <a
-                  href="#"
-                  class="text-xs font-medium text-wood-800/70 hover:text-wood-500 transition uppercase tracking-wide"
-                  >FAQ</a
-                >
-              </li>
-            </ul>
-          </div>
-
-          <div data-aos="fade-up" data-aos-duration="1000" data-aos-delay="200">
-            <h4 class="text-sm font-bold uppercase tracking-[0.15em] mb-6 text-wood-800">Contact</h4>
-            <ul class="space-y-4 mb-6">
-              <li class="text-xs font-medium text-wood-800/70 uppercase tracking-wide">123-456-7890</li>
-              <li class="text-xs font-medium text-wood-800/70 uppercase tracking-wide">info@emeecare.com</li>
-            </ul>
-            <div class="flex gap-4 text-wood-800">
-              <a href="#" class="hover:text-wood-500 transition"><i class="fab fa-instagram text-lg"></i></a>
-              <a href="#" class="hover:text-wood-500 transition"><i class="fab fa-facebook-f text-lg"></i></a>
-              <a href="#" class="hover:text-wood-500 transition"><i class="fab fa-pinterest-p text-lg"></i></a>
-            </div>
-          </div>
-
-          <div data-aos="fade-up" data-aos-duration="1000" data-aos-delay="300">
-            <h4 class="text-sm font-bold uppercase tracking-[0.15em] mb-6 text-wood-800 leading-relaxed">
-              Refresh Your Routine <br />
-              With Our Weekly Updates
-            </h4>
-            <form class="flex flex-col gap-3">
-              <input
-                type="email"
-                placeholder="Email Address"
-                class="w-full border border-wood-800 bg-transparent px-4 py-3 text-xs font-medium text-wood-800 placeholder-wood-800/50 outline-none focus:ring-1 focus:ring-wood-800 transition"
-              />
-
-              <button
-                type="button"
-                class="w-full bg-wood-800 text-white px-4 py-3 text-xs font-bold uppercase tracking-widest hover:bg-wood-500 transition duration-300"
-              >
-                Subscribe
-              </button>
-            </form>
-          </div>
+        <div class="mt-8 mb-8 text-sm text-white/80 space-y-2">
+          <p>62 Võ Thị Sáu, Phường Tân Định, Quận 1, TPHCM</p>
+          <p>0964 405 219 | emeecare@gmail.com</p>
         </div>
 
-        <div class="mt-16 text-center">
-          <p class="text-[10px] font-bold text-wood-800/40 uppercase tracking-widest">
-            © 2026 Emee Care. All rights reserved.
-          </p>
+        <div class="flex justify-center gap-6 text-lg mb-12">
+          <a href="#" class="hover:text-brand-primary transition"><i class="fab fa-facebook-f"></i></a>
+          <!-- <a href="#" class="hover:text-brand-primary transition"><i class="fab fa-twitter"></i></a>
+          <a href="#" class="hover:text-brand-primary transition"><i class="fab fa-instagram"></i></a>
+          <a href="#" class="hover:text-brand-primary transition"><i class="fab fa-youtube"></i></a> -->
+          <a href="#" class="hover:text-brand-primary transition"><i class="fab fa-tiktok"></i></a>
+        </div>
+
+        <div
+          class="border-t border-white/20 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-white/50"
+        >
+          <p>Copyright © 2026 Emee Care.</p>
+          <p class="mt-4 md:mt-0">Dịu nhẹ cho mỗi ngày</p>
         </div>
       </div>
     </footer>
-
-    <div class="fixed bottom-8 right-8 z-50" data-aos="fade-left" data-aos-delay="1000">
-      <button
-        class="bg-wood-800 text-white px-6 py-3 font-bold text-xs uppercase tracking-widest shadow-xl hover:bg-wood-500 transition"
-      >
-        Let's Chat!
-      </button>
-    </div>
 
     <div
       id="auth-modal"
@@ -555,25 +440,20 @@
       aria-modal="true"
     >
       <div class="flex items-center justify-center min-h-screen px-4 text-center backdrop-blur-sm">
-        <div
-          class="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
-          aria-hidden="true"
-          onclick="toggleAuthModal()"
-        ></div>
+        <div class="fixed inset-0 bg-black/50 transition-opacity" aria-hidden="true" onclick="toggleAuthModal()"></div>
 
         <div
-          class="relative bg-[#FDFBF7] rounded-xl shadow-2xl w-full max-w-md p-8 text-left transform transition-all animate-[fadeIn_0.3s_ease-out] border-t-4 border-[#855E42]"
+          class="relative bg-brand-bg rounded-xl shadow-2xl w-full max-w-md p-8 text-left transform transition-all animate-[fadeIn_0.3s_ease-out] border-t-4 border-brand-primary"
         >
           <button
             onclick="toggleAuthModal()"
-            class="absolute top-4 right-4 text-[#4A3B32]/40 hover:text-red-500 transition"
+            class="absolute top-4 right-4 text-brand-dark/40 hover:text-red-500 transition"
           >
             <i class="fas fa-times text-xl"></i>
           </button>
 
           <div class="text-center mb-6">
-            <h2 id="modal-title" class="text-2xl font-bold text-brown-800">Đăng nhập hệ thống</h2>
-            <p class="text-sm text-gray-500 mt-1">Dành cho Quản trị viên</p>
+            <h2 id="modal-title" class="text-2xl font-serif text-brand-dark">Đăng nhập hệ thống</h2>
           </div>
 
           <form id="login-form" action="/user/login" method="POST" class="space-y-5">
@@ -581,117 +461,106 @@
               id="login-error"
               class="text-red-500 text-sm p-2 bg-red-50 rounded text-center hidden font-bold border border-red-100"
             ></div>
-
             <div>
-              <label class="block text-xs font-bold text-[#4A3B32] uppercase tracking-wide mb-1">Email</label>
+              <label class="block text-xs font-bold text-brand-dark uppercase tracking-wide mb-1">Email</label>
               <input
                 type="email"
                 name="email"
-                class="w-full px-4 py-2.5 border border-[#4A3B32]/30 bg-white rounded-lg focus:outline-none focus:border-[#855E42] transition text-[#4A3B32]"
+                class="w-full px-4 py-2.5 border border-brand-dark/30 bg-white rounded-lg focus:outline-none focus:border-brand-primary transition text-brand-dark"
                 required
               />
             </div>
             <div>
-              <label class="block text-xs font-bold text-[#4A3B32] uppercase tracking-wide mb-1">Mật khẩu</label>
+              <label class="block text-xs font-bold text-brand-dark uppercase tracking-wide mb-1">Mật khẩu</label>
               <input
                 type="password"
                 name="password"
-                class="w-full px-4 py-2.5 border border-[#4A3B32]/30 bg-white rounded-lg focus:outline-none focus:border-[#855E42] transition text-[#4A3B32]"
+                class="w-full px-4 py-2.5 border border-brand-dark/30 bg-white rounded-lg focus:outline-none focus:border-brand-primary transition text-brand-dark"
                 required
               />
             </div>
-
             <div class="flex justify-between items-center text-xs">
-              <a href="#" class="text-[#855E42] hover:underline font-bold">Quên mật khẩu?</a>
+              <a href="#" class="text-brand-primary hover:underline font-bold">Quên mật khẩu?</a>
             </div>
-
             <button
               type="submit"
-              class="w-full bg-[#855E42] hover:bg-[#4A3B32] text-white font-bold py-3 rounded-lg transition shadow-lg uppercase tracking-widest text-sm"
+              class="w-full bg-brand-primary hover:bg-brand-dark text-white font-bold py-3 rounded-lg transition shadow-lg uppercase tracking-widest text-sm"
             >
               Đăng Nhập
             </button>
-
-            <div class="text-center text-xs text-[#4A3B32]/60 mt-4">
+            <div class="text-center text-xs text-brand-dark/60 mt-4">
               Bạn chưa có tài khoản?
               <a
                 href="javascript:void(0)"
                 onclick="switchToRegister()"
-                class="text-[#855E42] font-bold hover:underline ml-1"
+                class="text-brand-primary font-bold hover:underline ml-1"
+                >Đăng Ký ngay</a
               >
-                Đăng Ký ngay
-              </a>
             </div>
           </form>
 
           <form id="register-form" class="space-y-4 hidden">
             <div>
-              <label class="block text-xs font-bold text-[#4A3B32] uppercase tracking-wide mb-1">Họ và Tên</label>
+              <label class="block text-xs font-bold text-brand-dark uppercase tracking-wide mb-1">Họ và Tên</label>
               <input
                 type="text"
                 name="name"
-                class="w-full px-4 py-2.5 border border-[#4A3B32]/30 bg-white rounded-lg focus:outline-none focus:border-[#855E42] transition"
+                class="w-full px-4 py-2.5 border border-brand-dark/30 bg-white rounded-lg focus:outline-none focus:border-brand-primary transition"
                 required
               />
             </div>
             <div>
-              <label class="block text-xs font-bold text-[#4A3B32] uppercase tracking-wide mb-1">Email</label>
+              <label class="block text-xs font-bold text-brand-dark uppercase tracking-wide mb-1">Email</label>
               <input
                 type="email"
                 name="email"
-                class="w-full px-4 py-2.5 border border-[#4A3B32]/30 bg-white rounded-lg focus:outline-none focus:border-[#855E42] transition"
+                class="w-full px-4 py-2.5 border border-brand-dark/30 bg-white rounded-lg focus:outline-none focus:border-brand-primary transition"
                 required
               />
             </div>
             <div class="grid grid-cols-2 gap-4">
               <div>
-                <label class="block text-xs font-bold text-[#4A3B32] uppercase tracking-wide mb-1">Mật khẩu</label>
+                <label class="block text-xs font-bold text-brand-dark uppercase tracking-wide mb-1">Mật khẩu</label>
                 <input
                   type="password"
                   name="password"
-                  class="w-full px-4 py-2.5 border border-[#4A3B32]/30 bg-white rounded-lg focus:outline-none focus:border-[#855E42] transition"
+                  class="w-full px-4 py-2.5 border border-brand-dark/30 bg-white rounded-lg focus:outline-none focus:border-brand-primary transition"
                   required
                 />
               </div>
               <div>
-                <label class="block text-xs font-bold text-[#4A3B32] uppercase tracking-wide mb-1">Nhập lại MK</label>
+                <label class="block text-xs font-bold text-brand-dark uppercase tracking-wide mb-1">Nhập lại MK</label>
                 <input
                   type="password"
                   name="confirm_password"
-                  class="w-full px-4 py-2.5 border border-[#4A3B32]/30 bg-white rounded-lg focus:outline-none focus:border-[#855E42] transition"
+                  class="w-full px-4 py-2.5 border border-brand-dark/30 bg-white rounded-lg focus:outline-none focus:border-brand-primary transition"
                   required
                 />
               </div>
             </div>
             <div>
-              <label class="block text-xs font-bold text-[#4A3B32] uppercase tracking-wide mb-1">
-                Ngày sinh <span class="text-gray-400 font-normal normal-case">(Không bắt buộc)</span>
-              </label>
+              <label class="block text-xs font-bold text-brand-dark uppercase tracking-wide mb-1">Ngày sinh</label>
               <input
                 type="date"
                 name="date_of_birth"
-                class="w-full px-4 py-2.5 border border-[#4A3B32]/30 bg-white rounded-lg focus:outline-none focus:border-[#855E42] transition text-[#4A3B32]"
+                class="w-full px-4 py-2.5 border border-brand-dark/30 bg-white rounded-lg focus:outline-none focus:border-brand-primary transition"
               />
             </div>
-
             <p id="form-message" class="text-center font-semibold text-red-500 text-sm"></p>
-
             <button
               type="submit"
-              class="w-full bg-[#855E42] hover:bg-[#4A3B32] text-white font-bold py-3 rounded-lg transition shadow-lg uppercase tracking-widest text-sm"
+              class="w-full bg-brand-primary hover:bg-brand-dark text-white font-bold py-3 rounded-lg transition shadow-lg uppercase tracking-widest text-sm"
             >
               Đăng Ký
             </button>
-
-            <div class="text-center text-xs text-[#4A3B32]/60 mt-4">
+            <div class="text-center text-xs text-brand-dark/60 mt-4">
               Bạn đã có tài khoản?
               <a
                 href="javascript:void(0)"
                 onclick="switchToLogin()"
-                class="text-[#855E42] font-bold hover:underline ml-1"
+                class="text-brand-primary font-bold hover:underline ml-1"
+                >Đăng Nhập</a
               >
-                Đăng Nhập
-              </a>
             </div>
           </form>
 
@@ -705,28 +574,22 @@
               >
                 <span class="text-green-600 text-3xl font-bold">✓</span>
               </div>
-              <h4 class="text-xl font-bold text-[#4A3B32] mb-1">Đăng ký thành công!</h4>
-              <p class="text-sm text-[#4A3B32]/60">Vui lòng đăng nhập để tiếp tục.</p>
+              <h4 class="text-xl font-bold text-brand-dark mb-1">Đăng ký thành công!</h4>
+              <p class="text-sm text-brand-dark/60">Vui lòng đăng nhập để tiếp tục.</p>
             </div>
           </div>
         </div>
       </div>
     </div>
+
     <script>
       function updateCartBadge() {
-        // 1. Lấy dữ liệu từ sessionStorage
         const cart = JSON.parse(sessionStorage.getItem('cart')) || []
-
-        // 2. Tính tổng số lượng (quantity) của tất cả sản phẩm trong mảng
         const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0)
-
-        // 3. Tìm thẻ badge dựa trên ID bạn đã đặt (cart-count)
         const badge = document.getElementById('cart-count')
 
         if (badge) {
           badge.innerText = totalItems
-
-          // Bonus: Nếu bằng 0 thì ẩn đi cho đẹp, lớn hơn 0 thì hiện
           if (totalItems > 0) {
             badge.style.display = 'flex'
           } else {
@@ -734,8 +597,6 @@
           }
         }
       }
-
-      // QUAN TRỌNG: Gọi hàm này ngay khi trình duyệt vừa load xong trang
       document.addEventListener('DOMContentLoaded', updateCartBadge)
     </script>
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
