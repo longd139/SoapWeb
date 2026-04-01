@@ -87,9 +87,6 @@ export const getAllProductsController = async (req: Request, res: Response) => {
       maxPrice = Number(maxPriceStr)
     }
 
-    // THÊM DÒNG NÀY ĐỂ DEBUG: Kiểm tra xem Backend có nhận được số tiền không
-    console.log('Giá lọc nhận được từ Frontend:', maxPrice)
-
     // 3. Truyền xuống Service
     const products = await productsService.getAllProducts(searchKeyword, maxPrice)
 

@@ -8,6 +8,7 @@
       rel="stylesheet"
       href="[https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css](https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css)"
     />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -438,12 +439,17 @@
                 </div>
 
                 <div>
-                  <label class="block text-sm font-medium text-brown-600 mb-1">Hình ảnh sản phẩm</label>
+                  <label class="block text-sm font-medium text-brown-600 mb-1"
+                    >Hình ảnh sản phẩm
+
+                    <span class="text-[10px] text-red-500 font-normal ml-1 italic"
+                      >(Chú ý: Chỉ tải lên 1 ảnh duy nhất để tránh bị lỗi)</span
+                    >
+                  </label>
 
                   <input
                     type="file"
                     id="files-input"
-                    multiple
                     accept="image/*"
                     onchange="handlePreviewImages(event)"
                     class="block w-full text-sm text-slate-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-brown-50 file:text-brown-700 hover:file:bg-brown-100 cursor-pointer"

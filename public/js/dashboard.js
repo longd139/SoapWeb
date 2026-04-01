@@ -232,35 +232,68 @@ function switchTab(element, title) {
 window.currentEditingId = null
 
 window.handleAddProduct = async function (event) {
-  event.preventDefault() // Chặn load lại trang
+  event.preventDefault()
 
   const form = event.target
+  const btnSubmit = document.getElementById('btn-submit')
+  const loadingScreen = document.getElementById('upload-loading')
+
+  // 1. LẤY DỮ LIỆU TỪ FORM
   const formData = new FormData(form)
   const data = Object.fromEntries(formData.entries())
 
-  // 🛠️ 1. XỬ LÝ DỮ LIỆU ĐẦU VÀO
-  // Chuyển đổi 'price' và 'quantity' từ chuỗi sang số
-  if (data.price) data.price = Number(data.price)
-  if (data.quantity) data.quantity = Number(data.quantity)
-
-  // Xử lý mảng ảnh (Lấy từ biến toàn cục window.globalImageUrls)
-  // Ưu tiên lấy từ biến toàn cục vì đó là nơi lưu ảnh sau khi upload/xóa
-  data.images = window.globalImageUrls || []
-
-  // 🛠️ 2. XÁC ĐỊNH CHẾ ĐỘ: THÊM HAY SỬA?
-  let apiUrl = '/products/add-product' // Mặc định là link thêm mới
-  let apiMethod = 'POST' // Mặc định là method POST
-  let successMessage = '✅ Đăng sản phẩm thành công!'
-
-  // Nếu đang có ID cần sửa -> Chuyển sang chế độ UPDATE
-  if (window.currentEditingId) {
-    apiUrl = `/products/${window.currentEditingId}` // Link sửa (theo ID)
-    apiMethod = 'PUT' // Method PUT
-    successMessage = '✅ Cập nhật sản phẩm thành công!'
-  }
-
   try {
-    // 3. Gửi lên API (Dùng URL và Method động đã xác định ở trên)
+    // --- 🛠️ BƯỚC MỚI: XỬ LÝ UPLOAD ẢNH CHỐT HẠ ---
+    // Chỉ upload nếu có file mới được chọn ở biến tạm 'selectedFile'
+    // (selectedFile là biến mình đã lưu ở hàm handlePreviewImages)
+    if (window.selectedFile) {
+      // Hiện loading che màn hình để người dùng không bấm lung tung
+      if (loadingScreen) loadingScreen.classList.remove('hidden')
+      btnSubmit.disabled = true
+      btnSubmit.innerHTML = ' đang nén & tải ảnh...'
+
+      // A. Nén ảnh
+      const options = { maxSizeMB: 1, maxWidthOrHeight: 1920, useWebWorker: true, fileType: 'image/jpeg' }
+      const compressedFile = await imageCompression(window.selectedFile, options)
+
+      // B. Upload lên Cloudinary
+      const uploadFormData = new FormData()
+      uploadFormData.append('images', compressedFile)
+
+      const uploadRes = await fetch('/admin/medias/upload-multiple', {
+        method: 'POST',
+        body: uploadFormData
+      })
+      const uploadResult = await uploadRes.json()
+
+      if (!uploadRes.ok) throw new Error(uploadResult.message || 'Lỗi upload ảnh')
+
+      // C. Lấy URL trả về và gán vào data để gửi lên DB
+      // Vì chú chỉ muốn 1 ảnh, ta lấy phần tử đầu tiên
+      data.images = uploadResult.result[0] || uploadResult.urls[0]
+    } else {
+      // Nếu không chọn ảnh mới (trường hợp Sửa sản phẩm mà giữ nguyên ảnh cũ)
+      // thì lấy lại ảnh cũ đang hiển thị trong globalImageUrls
+      data.images = window.globalImageUrls || []
+    }
+    // ----------------------------------------------
+
+    // 🛠️ 2. CHUẨN HÓA DỮ LIỆU SỐ
+    if (data.price) data.price = Number(data.price)
+    if (data.quantity) data.quantity = Number(data.quantity)
+
+    // 🛠️ 3. XÁC ĐỊNH CHẾ ĐỘ: THÊM HAY SỬA?
+    let apiUrl = '/products/add-product'
+    let apiMethod = 'POST'
+    let successMessage = 'Đăng sản phẩm thành công!'
+
+    if (window.currentEditingId) {
+      apiUrl = `/products/${window.currentEditingId}`
+      apiMethod = 'PUT'
+      successMessage = 'Cập nhật sản phẩm thành công!'
+    }
+
+    // 4. GỬI DỮ LIỆU LÊN DATABASE
     const response = await fetch(apiUrl, {
       method: apiMethod,
       headers: {
@@ -274,51 +307,40 @@ window.handleAddProduct = async function (event) {
 
     if (response.ok) {
       // ✅ THÀNH CÔNG
-      if (typeof showToast === 'function') {
-        showToast(successMessage, 'success')
-      } else {
-        alert(successMessage)
-      }
+      if (typeof showToast === 'function') showToast(successMessage, 'success')
 
-      // 4. RESET FORM & TRẠNG THÁI
+      // 5. RESET TOÀN BỘ
       form.reset()
-      document.getElementById('preview-container').innerHTML = ''
-      document.getElementById('product-images-urls').value = ''
+      document.getElementById('preview-container').innerHTML =
+        '<p class="text-xs text-gray-400 w-full text-center py-4">Chưa có ảnh nào được chọn</p>'
       window.globalImageUrls = []
-
-      // Quan trọng: Reset biến ID về null để lần sau bấm nút sẽ là Thêm Mới
+      window.selectedFile = null // Xóa file tạm
       window.currentEditingId = null
 
-      // Trả lại giao diện nút bấm về ban đầu (Nút Thêm mới)
-      const btnSubmit = document.getElementById('btn-submit')
+      // Reset nút bấm
       btnSubmit.innerHTML = `<svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" /></svg> Đăng sản phẩm`
       btnSubmit.classList.add('bg-brown-600')
-      btnSubmit.classList.remove('bg-blue-600', 'hover:bg-blue-700')
+      btnSubmit.classList.remove('bg-blue-600', 'hover:bg-blue-700', 'opacity-75', 'cursor-not-allowed')
+      btnSubmit.disabled = false
 
-      // Xóa nút "Hủy bỏ" nếu đang hiển thị
-      const btnCancel = document.getElementById('btn-cancel-edit')
-      if (btnCancel) btnCancel.remove()
-
-      // Tải lại bảng danh sách
-      if (typeof loadAdminProducts === 'function') {
-        loadAdminProducts()
-      }
+      if (typeof loadAdminProducts === 'function') loadAdminProducts()
     } else {
-      // ❌ LỖI TỪ SERVER
-      const msg = result.message || 'Có lỗi xảy ra'
-      if (typeof showToast === 'function') {
-        showToast('❌ Lỗi: ' + msg, 'error')
-      } else {
-        alert('❌ Lỗi: ' + msg)
-      }
+      throw new Error(result.message || 'Lỗi server')
     }
   } catch (error) {
+    if (error.message === 'Jwt expired') {
+      showToast('Phiên đăng nhập đã hết hạn, đang quay về trang chủ...', 'error')
+      localStorage.removeItem('access_token') // Xóa token hết hạn
+      // Chờ 2 giây rồi chuyển về trang login
+      setTimeout(() => {
+        window.location.href = '/'
+      }, 2000)
+      return
+    } else if (typeof showToast === 'function') showToast('❌ Lỗi: ' + error.message, 'error')
     console.error(error)
-    if (typeof showToast === 'function') {
-      showToast('❌ Lỗi kết nối server', 'error')
-    } else {
-      alert('❌ Lỗi kết nối server')
-    }
+  } finally {
+    if (loadingScreen) loadingScreen.classList.add('hidden')
+    btnSubmit.disabled = false
   }
 }
 
@@ -504,97 +526,42 @@ function showToast(message, type = 'success') {
 // Chạy hàm khi trang tải xong
 document.addEventListener('DOMContentLoaded', loadAdminProducts)
 
-async function handlePreviewImages(event) {
-  const files = event.target.files
+let selectedFile = null // Biến tạm lưu file gốc
+
+function handlePreviewImages(event) {
+  const file = event.target.files[0]
   const previewContainer = document.getElementById('preview-container')
-  const loadingScreen = document.getElementById('upload-loading')
-  const btnSubmit = document.getElementById('btn-submit')
 
-  if (files.length === 0) return
+  if (!file) return
 
-  loadingScreen.classList.remove('hidden')
-  btnSubmit.disabled = true
+  selectedFile = file // Lưu lại để tí nữa bấm "Đăng" mới dùng
 
-  btnSubmit.innerHTML = `
-    <div class="animate-spin rounded-full h-5 w-5 border-[3px] border-gray-200 border-t-brown-500 mr-3"></div>
-    Đang xử lý...
-`
-
-  btnSubmit.classList.add('opacity-75', 'cursor-not-allowed')
-  previewContainer.innerHTML = ''
-
-  // Cấu hình nén ảnh
-  const options = {
-    maxSizeMB: 1, // Giữ ảnh dưới 1MB
-    maxWidthOrHeight: 1920, // Giữ độ phân giải Full HD (đủ nét cho web)
-    useWebWorker: true, // Dùng luồng phụ để không bị đơ trình duyệt
-    fileType: 'image/jpeg' // Chuyển hết về JPEG cho nhẹ
+  // Hiển thị preview ngay lập tức bằng FileReader
+  const reader = new FileReader()
+  reader.onload = function (e) {
+    previewContainer.innerHTML = `
+      <div class="relative w-24 h-24 group">
+        <img src="${e.target.result}" class="w-full h-full object-cover rounded-lg border border-gray-300">
+        <button 
+          type="button"
+          onclick="removeProductImage()"
+          class="absolute -top-2 -right-2 bg-red-500 text-white w-6 h-6 rounded-full flex items-center justify-center shadow-md hover:bg-red-600 transition z-10 font-bold"
+        >
+          ×
+        </button>
+      </div>
+    `
   }
-
-  const formData = new FormData()
-
-  try {
-    // 2. Nén từng ảnh (Chạy song song)
-    const compressedFilesPromises = [...files].map(async (file) => {
-      // Hiện preview ngay lập tức (dùng ảnh gốc cho nhanh)
-      const img = document.createElement('img')
-      img.src = URL.createObjectURL(file)
-      img.className = 'w-20 h-20 object-cover rounded border border-gray-300 opacity-50'
-      previewContainer.appendChild(img)
-
-      // Thực hiện nén
-      const compressedFile = await imageCompression(file, options)
-
-      return compressedFile
-    })
-
-    // Đợi tất cả ảnh nén xong
-    const compressedFiles = await Promise.all(compressedFilesPromises)
-
-    // 3. Đưa ảnh đã nén vào FormData
-    for (const file of compressedFiles) {
-      formData.append('images', file)
-    }
-
-    // 4. Gửi lên Server (Lúc này file rất nhẹ, gửi cực nhanh)
-    const res = await fetch('/admin/medias/upload-multiple', {
-      method: 'POST',
-      body: formData
-    })
-
-    const data = await res.json()
-
-    if (res.ok) {
-      const newUrls = data.result || data.urls
-      window.globalImageUrls = [...(window.globalImageUrls || []), ...newUrls]
-
-      document.getElementById('product-images-urls').value = JSON.stringify(window.globalImageUrls)
-
-      // Làm rõ ảnh preview
-      const imgs = previewContainer.getElementsByTagName('img')
-      for (let img of imgs) img.classList.remove('opacity-50')
-      console.log('Upload successfull !')
-    } else {
-      alert('Lỗi upload: ' + data.message)
-    }
-  } catch (err) {
-    console.error(err)
-    alert('Lỗi: ' + (err.message || 'Không thể xử lý ảnh'))
-  } finally {
-    loadingScreen.classList.add('hidden')
-    btnSubmit.disabled = false
-    // Trả lại nút ban đầu
-    btnSubmit.innerHTML = `
-            <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-            </svg>
-            Đăng sản phẩm
-        `
-    btnSubmit.classList.remove('opacity-75', 'cursor-not-allowed')
-    event.target.value = ''
-  }
+  reader.readAsDataURL(file)
 }
 
+// Hàm bổ trợ để xóa ảnh
+function removeProductImage() {
+  selectedFile = null
+  document.getElementById('files-input').value = ''
+  document.getElementById('preview-container').innerHTML =
+    '<p class="text-xs text-gray-400 w-full text-center py-4">Chưa có ảnh nào được chọn</p>'
+}
 // Biến toàn cục để biết đang sửa sản phẩm nào (null = đang thêm mới)
 let currentEditingId = null
 
